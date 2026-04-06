@@ -1,10 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ThemeSwitcher } from "../components/theme-switcher";
+import { SideNav } from "../components/side-nav";
+
 
 export default function Home() {
   return (
     <div className="min-h-screen font-sans selection:bg-[var(--accent-light)] transition-colors duration-300">
+      <SideNav />
       {/* Elementos flotantes decorativos cálidos */}
       <div className="fixed inset-0 -z-10 h-full w-full bg-[var(--bg-page)] overflow-hidden transition-colors duration-300">
         <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-[var(--accent-light)] rounded-full blur-3xl animate-float opacity-70"></div>
@@ -14,7 +17,7 @@ export default function Home() {
       <main className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-20 flex flex-col gap-16 md:gap-24 relative z-10">
 
         {/* Header / Hero Section */}
-        <section className="flex flex-col gap-6 opacity-0-init animate-fade-in-up">
+        <section id="inicio" className="flex flex-col gap-6 opacity-0-init animate-fade-in-up">
           <div className="space-y-4">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[var(--text-page)] transition-colors duration-300">
               Daniel Alejandro Estrada Olalde
@@ -29,12 +32,6 @@ export default function Home() {
           </div>
 
           <div className="flex flex-wrap items-center justify-start gap-3 sm:gap-4 mt-4 md:mt-6">
-            <a href="#experiencia" className="px-5 sm:px-7 py-2.5 sm:py-3 text-sm sm:text-base rounded-full bg-[var(--accent)] text-white font-semibold hover:bg-[var(--accent-hover)] transition-all hover:-translate-y-1 duration-300 shadow-md flex items-center justify-center">
-              Experiencia
-            </a>
-            <a href="#proyectos" className="px-5 sm:px-7 py-2.5 sm:py-3 text-sm sm:text-base rounded-full bg-[var(--bg-sec)] text-[var(--text-page)] font-semibold hover:bg-[var(--bg-sec-hover)] border border-[var(--border-line)] transition-all hover:-translate-y-1 duration-300 flex items-center justify-center">
-              Mis Proyectos
-            </a>
             <Link href="/cv" className="px-5 sm:px-7 py-2.5 sm:py-3 text-sm sm:text-base rounded-full bg-black dark:bg-[#E8E5E1] text-white dark:text-black font-bold border border-transparent hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
               Ver CV Clásico
