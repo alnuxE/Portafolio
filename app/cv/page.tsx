@@ -115,7 +115,7 @@ export default function CVPage() {
         </section>
 
         {/* Agrupación de Habilidades e Idiomas */}
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           
           {/* Habilidades */}
           <section>

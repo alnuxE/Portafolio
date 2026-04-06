@@ -33,10 +33,10 @@ export function ThemeSwitcher() {
   return (
     <button
       onClick={toggleTheme}
-      className="px-7 py-3 rounded-full bg-[var(--accent)] text-white font-semibold hover:bg-[var(--accent-hover)] transition-all hover:-translate-y-1 duration-300 shadow-md flex items-center justify-center gap-2"
+      className="px-5 sm:px-7 py-2.5 sm:py-3 text-sm sm:text-base rounded-full bg-[var(--accent)] text-white font-semibold hover:bg-[var(--accent-hover)] transition-all hover:-translate-y-1 duration-300 shadow-md flex items-center justify-center gap-2"
       aria-label="Toggle Theme"
     >
-      {isDark ? <Sun size={20} /> : <Moon size={20} />} 
+      {isDark ? <Sun className="w-4 h-4 sm:w-5 sm:h-5" /> : <Moon className="w-4 h-4 sm:w-5 sm:h-5" />} 
       <span className="font-semibold">
         {isDark ? "Modo Claro" : "Modo Oscuro"}
       </span>
