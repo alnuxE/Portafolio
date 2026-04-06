@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portafolio - Daniel Alejandro Estrada Olalde 🚀
 
-## Getting Started
+Landing page profesional y generador de Currículum para presentarse en la industria del desarrollo de software.
+Este proyecto funciona no solo como un escaparate de mis proyectos y experiencia, sino que también contiene un módulo nativo que renderiza automáticamente un formato de Currículum clásico (estilo Harvard) listo para imprimirse.
 
-First, run the development server:
+## ✨ Características Principales
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+*   **Página Principal Moderna:** Diseño fluido y estético con paleta de colores cálidos y amigables.
+*   **Modo Oscuro Personalizado:** Botón dinámico que intercambia el set de componentes entre una paleta arena (claro) y café terracota (modo oscuro) utilizando un mecanismo nativo sólido con localStorage.
+*   **Sección de Experiencia y Educación:** Líneas de tiempo atractivas sobre mi carrera académica y profesional.
+*   **Generador de CV (Estilo Harvard):** Una vista separada (`/cv`) con estilo clásico y minimalista en blanco y negro con la fuente tradicional Serif. Incluye soporte de `@media print`, por lo que al imprimirlo (clickeando al botón en la vista o `Ctrl+P`) el navegador ajusta la hoja perfecta en A4, elimina elementos de la App Web y exporta un PDF súper profesional.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Tecnologías
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Este proyecto está construido con:
+*   [Next.js](https://nextjs.org/) (App Router)
+*   [Tailwind CSS v4](https://tailwindcss.com/)
+*   [React](https://reactjs.org/)
+*   [Lucide React](https://lucide.dev/) (Iconos)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 Cómo Iniciar el Proyecto
 
-## Learn More
+Para hacer correr este proyecto localmente, asegúrate de tener [Node.js](https://nodejs.org/) instalado. Sigue estos pasos:
 
-To learn more about Next.js, take a look at the following resources:
+1.  **Clona el repositorio** o desempaqueta los archivos:
+    ```bash
+    git clone https://github.com/tu-usuario/tu-repositorio.git
+    cd portafolio
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2.  **Instala las dependencias** esenciales (si aún no lo has hecho):
+    ```bash
+    npm install
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3.  **Inicia el Servidor de Desarrollo:**
+    Este es el comando principal. Ejecútalo en tu terminal:
+    ```bash
+    npm run dev
+    ```
 
-## Deploy on Vercel
+4.  **Abre el puerto:**
+    Navega a [http://localhost:3000](http://localhost:3000) en tu navegador para ver la página y probar las transiciones. 
+    Para cargar la ruta del CV y presionar el botón de guardar como PDF, navega a `http://localhost:3000/cv`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📌 Autor
+**Daniel Alejandro Estrada Olalde**
+*Estudiante Ingeniería en Informática | Desarrollador Backend*
