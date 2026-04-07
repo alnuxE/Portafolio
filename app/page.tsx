@@ -123,7 +123,7 @@ export default function Home() {
         <section id="proyectos" className="scroll-mt-20 md:scroll-mt-24 opacity-0-init animate-fade-in-up delay-400">
           <h3 className="text-2xl md:text-3xl font-semibold mb-8 md:mb-10 flex items-center gap-3 md:gap-4 text-[var(--text-page)] transition-colors duration-300">
             <span className="w-8 md:w-10 h-[3px] bg-[var(--accent)] rounded-full"></span>
-            Nebula-Web
+            Proyectos Destacados
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -133,7 +133,7 @@ export default function Home() {
                 <span className="text-[var(--accent)] font-medium text-lg opacity-70">✨ Imagen del Proyecto</span>
               </div>
               <div className="w-full">
-                <h4 className="text-xl font-bold text-[var(--text-page)] group-hover:text-[var(--accent)] transition-colors duration-300">Nombre del Proyecto 1</h4>
+                <h4 className="text-xl font-bold text-[var(--text-page)] group-hover:text-[var(--accent)] transition-colors duration-300">Nebula Web</h4>
                 <p className="text-[var(--text-page)]/70 text-sm line-clamp-3 mt-3 leading-relaxed transition-colors duration-300">
                   Sistema de analitica de datos para torneos de free fire
                 </p>
