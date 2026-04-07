@@ -123,7 +123,7 @@ export default function Home() {
         <section id="proyectos" className="scroll-mt-20 md:scroll-mt-24 opacity-0-init animate-fade-in-up delay-400">
           <h3 className="text-2xl md:text-3xl font-semibold mb-8 md:mb-10 flex items-center gap-3 md:gap-4 text-[var(--text-page)] transition-colors duration-300">
             <span className="w-8 md:w-10 h-[3px] bg-[var(--accent)] rounded-full"></span>
-            Proyectos Destacados
+            Nebula-Web
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -135,7 +135,7 @@ export default function Home() {
               <div className="w-full">
                 <h4 className="text-xl font-bold text-[var(--text-page)] group-hover:text-[var(--accent)] transition-colors duration-300">Nombre del Proyecto 1</h4>
                 <p className="text-[var(--text-page)]/70 text-sm line-clamp-3 mt-3 leading-relaxed transition-colors duration-300">
-                  Breve descripción. Sustituye este texto explicando el propósito del sistema, el desafío principal y cómo tu arquitectura en el backend lo resolvió eficazmente.
+                  Sistema de analitica de datos para torneos de free fire
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 mt-auto pt-2">
