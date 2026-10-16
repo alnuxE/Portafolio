@@ -1,0 +1,804 @@
+/* ============================================================================
+   /cv — una ruta, dos presentaciones, las dos imprimibles en A4.
+   ----------------------------------------------------------------------------
+   Dos capas conceptualmente distintas:
+     · El escritorio (el fondo de la ventana) SÍ respeta el tema.
+     · La hoja es papel: siempre blanca con tinta negra, en los dos temas. Un
+       documento impreso no tiene modo oscuro, y enseñar en pantalla algo
+       distinto de lo que sale por la impresora es un defecto, no una función.
+
+   Estas reglas van SIN @layer a propósito: así ganan a las utilidades de
+   Tailwind y a la capa `components` de globals.css sin pelear por
+   especificidad. El CV es un documento de imprenta medido en mm y en pt; no
+   quiero que una utilidad suelta le cambie una medida.
+
+   El bloque `@page { size: A4; margin: 0 }` NO se repite aquí: ya está en
+   globals.css. Los márgenes los pone la hoja con su padding. Declararlos en
+   los dos sitios duplica los márgenes y manda el CV a dos páginas.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Familias. Se escriben con la variable que inyecta next/font, no con el
+   token `--font-serif` de globals.css: ese token se declara en :root, donde
+   `--font-garamond` todavía no existe, así que como propiedad personalizada
+   heredada nunca llega a resolver.
+   -------------------------------------------------------------------------- */
+.escritorio {
+  --cv-serif: var(--font-garamond), Georgia, "Times New Roman", serif;
+  --cv-sans: var(--font-plex-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cv-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+  --cv-display: var(--font-martian), ui-monospace, "SFMono-Regular", monospace;
+
+  min-height: 100svh;
+  background: var(--bg-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Hueco para la barra fija de arriba. */
+  padding: 5.5rem 1rem 2rem;
+}
+
+@media (max-width: 767px) {
+  .escritorio {
+    /* La barra se ancla abajo: el hueco cambia de lado. */
+    padding: 1rem 1rem 5.5rem;
+  }
+}
+
+/* ============================================================================
+   LA HOJA
+   Única excepción permitida al «cero hexadecimales»: la §8.0 del sistema
+   visual define aquí, en CSS, los tokens del papel. A partir de este punto
+   todo lo que hay dentro de la hoja usa los tokens, nunca un valor.
+   ========================================================================== */
+.hoja {
+  --bg: #ffffff;
+  --bg-2: #f4f4f4;
+  --surface: #ffffff;
+  --surface-2: #ededed;
+  --border: #b8b8b8;
+  --border-soft: #dcdcdc;
+  --fg: #111111;
+  --fg-muted: #3a3a3a;
+  --fg-faint: #5e5e5e;
+  --accent: #8e1b3f;
+  --accent-2: #6e1230;
+  --on-accent: #ffffff;
+  --accent-soft: #f7e3ea;
+  /* El anillo de foco también es del papel: si se hereda del tema oscuro sale
+     rosa mexicano sobre una hoja blanca. */
+  --ring: var(--accent);
+  --focus-bg: var(--surface);
+  color-scheme: light;
+
+  box-sizing: border-box;
+  width: 210mm;
+  min-height: 297mm;
+  background: var(--surface);
+  color: var(--fg);
+  box-shadow: var(--shadow);
+  /* Cifras tabulares en todo el documento: es lo que hace que las columnas
+     de proyectos cuadren de verdad. */
+  font-variant-numeric: tabular-nums;
+}
+
+.hoja *,
+.hoja *::before,
+.hoja *::after {
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   Escalado de la hoja en pantallas estrechas. No se remaqueta el CV: el A4
+   real es el entregable, así que se reduce entero.
+
+   CSS no sabe dividir una longitud entre otra longitud, pero atan2() sí acepta
+   dos longitudes y devuelve un ángulo: tan(atan2(a, b)) es exactamente a/b
+   como número puro. Es la única forma de calcular el factor de escala sin
+   JavaScript, y hace falta sin JavaScript porque tiene que estar bien en la
+   primera pintura, antes de que hidrate nada.
+
+   El rango llega a 1023 px y no a 767 px porque 210 mm son 793,7 px: entre
+   768 y 826 px la hoja también desborda. min() deja el factor en 1 en cuanto
+   hay sitio, así que en ese tramo la regla no hace nada.
+   -------------------------------------------------------------------------- */
+.marco-hoja {
+  --ancho-hoja: 793.7px; /* 210 mm a 96 dpi */
+  --escala: 1;
+}
+
+@media (max-width: 1023px) {
+  .marco-hoja {
+    --escala: tan(atan2(min(100vw - 2rem, var(--ancho-hoja)), var(--ancho-hoja)));
+    transform: scale(var(--escala));
+    transform-origin: top center;
+    /* Una transformación no encoge la caja: sin esto queda debajo un hueco
+       del tamaño de la parte que ya no se ve. */
+    height: calc(297mm * var(--escala));
+  }
+}
+
+/* ============================================================================
+   BARRA DE HERRAMIENTAS — mobiliario de pantalla, no del documento.
+   Sí respeta el tema; desaparece al imprimir.
+   ========================================================================== */
+.barra-cv {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  /* Uno de los dos únicos sitios de todo el proyecto con sombra. */
+  box-shadow: var(--shadow);
+  --focus-bg: var(--surface);
+}
+
+@media (max-width: 767px) {
+  .barra-cv {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+    border: 0;
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+  }
+}
+
+/* Volver es un enlace de texto, no un círculo flotante con sombra: un círculo
+   con sombra es un botón de acción principal, y volver no lo es.
+
+   Es hijo de la barra en el DOM pero `position: fixed`, así que en escritorio
+   se coloca respecto a la ventana (arriba a la izquierda) aunque su padre esté
+   arriba a la derecha. En móvil vuelve al flujo y entra en la barra de abajo.
+   Funciona porque la barra no lleva transform, filter ni contain. */
+.volver-cv {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding-inline: 0.25rem;
+  flex: none;
+  font-family: var(--cv-mono);
+  font-size: var(--fs-mono-sm);
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  --focus-bg: var(--bg-2);
+}
+.volver-cv:hover {
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+}
+.volver-cv:active {
+  color: var(--accent-2);
+}
+
+@media (max-width: 767px) {
+  .volver-cv {
+    position: static;
+    --focus-bg: var(--surface);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Conmutador segmentado. El estado seleccionado se marca por relleno Y por
+   peso, nunca solo por color, y además lo dice `aria-pressed`.
+   El borde del segmento en reposo es --fg-faint y no --border porque aquí el
+   borde es el único indicador del control, y --border no llega a 3:1.
+   -------------------------------------------------------------------------- */
+.conmutador-formato {
+  display: inline-flex;
+}
+
+.seg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 7rem;
+  padding-inline: 0.875rem;
+  background: transparent;
+  color: var(--fg-muted);
+  border: 1px solid var(--fg-faint);
+  font-family: var(--cv-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  /* Un rótulo partido en dos líneas hace que ese segmento parezca otro
+     control. Antes que envolver, se estrecha. */
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Tres segmentos no caben a 375 px con 7rem de ancho mínimo cada uno. */
+@media (max-width: 480px) {
+  .seg {
+    min-width: 0;
+    flex: 1 1 0;
+    padding-inline: 0.5rem;
+    font-size: 0.8125rem;
+  }
+}
+.seg:first-child {
+  border-radius: var(--r) 0 0 var(--r);
+}
+.seg:last-child {
+  border-radius: 0 var(--r) var(--r) 0;
+  margin-left: -1px;
+}
+.seg:hover {
+  background: var(--surface-2);
+  color: var(--fg);
+}
+.seg:active {
+  background: var(--bg-2);
+}
+.seg[aria-pressed="true"] {
+  position: relative;
+  z-index: 1;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+@media (min-width: 1024px) {
+  .seg {
+    min-height: 40px;
+  }
+}
+@media (max-width: 767px) {
+  .conmutador-formato {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .seg {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 0.5rem;
+  }
+}
+
+/* Por debajo de 480 px no caben las tres etiquetas y los rótulos se pisan.
+   «Volver» e «Imprimir» se quedan en icono —siguen midiendo 44 px y conservan
+   su nombre accesible por `aria-label`—, y el ancho que sueltan se lo lleva el
+   conmutador, que es el control que de verdad hay que poder leer. */
+@media (max-width: 479px) {
+  .cv-etiqueta {
+    display: none;
+  }
+  .volver-cv,
+  .barra-cv .btn {
+    min-width: 44px;
+    padding-inline: 0.5rem;
+  }
+  .seg {
+    font-size: 0.8125rem;
+  }
+}
+
+/* ============================================================================
+   PRESENTACIÓN «CLÁSICO» — Harvard
+   Ni una sola mono, ni una sans. Ningún color: tinta y papel.
+   ========================================================================== */
+.cv-clasico {
+  font-family: var(--cv-serif);
+  font-size: 10pt;
+  line-height: 1.4;
+  padding: 18mm 20mm;
+  text-wrap: pretty;
+}
+
+.cl-nombre {
+  font-size: 20pt;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.12;
+  text-align: center;
+}
+
+.cl-rol {
+  margin-top: 0.5mm;
+  font-size: 11pt;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Los separadores son CSS, no texto: así el marcado no lleva glifos sueltos
+   y el lector de pantalla no los lee. */
+.cl-contacto {
+  margin-top: 1.5mm;
+  font-size: 9.5pt;
+  text-align: center;
+  line-height: 1.35;
+}
+.cl-contacto > * + *::before {
+  content: "·";
+  margin-inline: 2mm;
+  color: var(--fg-muted);
+}
+
+.cv-clasico a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-thickness: 0.5pt;
+  text-underline-offset: 2px;
+}
+
+.cl-seccion {
+  margin-top: 3mm;
+}
+
+/* Un filete de 0,75 pt de ancho completo bajo cada encabezado, con 3 mm de
+   aire debajo. Ningún otro filete en toda la presentación. */
+.cl-seccion > h2 {
+  font-size: 11pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 0.75pt solid var(--fg);
+  padding-bottom: 0.8mm;
+  margin-bottom: 2.6mm;
+}
+
+.cl-entrada + .cl-entrada {
+  margin-top: 1.6mm;
+}
+
+/* Fecha alineada a la derecha, en la misma línea de base que el título. */
+.cl-linea {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6mm;
+}
+.cl-titulo {
+  font-size: 10pt;
+  font-weight: 600;
+}
+.cl-fecha {
+  font-size: 9.5pt;
+  font-style: italic;
+  white-space: nowrap;
+}
+.cl-sub {
+  font-style: italic;
+}
+
+/* Viñeta de disco real con sangría francesa de 4 mm. */
+.cl-lista {
+  list-style: disc outside;
+  padding-left: 4mm;
+  margin-top: 1mm;
+}
+.cl-lista > li + li {
+  margin-top: 0.4mm;
+}
+
+.cl-plana {
+  list-style: none;
+  padding: 0;
+}
+.cl-plana > li + li {
+  margin-top: 0.4mm;
+}
+
+.cl-rotulo {
+  font-weight: 600;
+}
+
+.cl-clientes {
+  margin-top: 1.5mm;
+}
+
+.cl-total {
+  margin-top: 1.5mm;
+  font-style: italic;
+}
+
+.cl-dosc {
+  display: grid;
+  grid-template-columns: 2.7fr 1fr;
+  column-gap: 8mm;
+  align-items: start;
+}
+
+/* ============================================================================
+   PRESENTACIÓN «DESTACADO» — para empresa
+   Tiene que ganar la comparación en cinco segundos y seguir funcionando
+   fotocopiada en blanco y negro: toda la jerarquía la cargan el tamaño, el
+   peso y el grosor de los filetes. Si borras el color no se pierde ninguna
+   capa de información.
+   ========================================================================== */
+.cv-destacado {
+  font-family: var(--cv-sans);
+  font-size: 9.5pt;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  text-wrap: pretty;
+}
+
+.cd-cabecera {
+  padding: 12mm 14mm 5mm;
+}
+
+/* El nombre en la misma letra con la que escribe: se ve a simple vista que
+   el CV y el sitio los firma la misma persona. En negro, no en guinda: al
+   imprimir en B/N el guinda se vuelve un gris medio y el nombre perdería peso
+   justo donde más lo necesita. */
+.cd-nombre {
+  font-family: var(--cv-display);
+  font-weight: 700;
+  font-variation-settings: "wdth" 87.5;
+  font-size: 18pt;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.cd-rol {
+  margin-top: 2mm;
+  font-size: 10.5pt;
+  font-weight: 600;
+}
+
+.cd-contacto {
+  margin-top: 2mm;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 5mm;
+  font-family: var(--cv-mono);
+  font-size: 8pt;
+  color: var(--fg-muted);
+}
+
+/* Uso 1 del color: el filete guinda de 2 mm bajo la banda de cabecera. */
+.cd-filete-guinda {
+  height: 2mm;
+  background: var(--accent);
+}
+
+.cd-cuerpo {
+  display: grid;
+  grid-template-columns: 58mm minmax(0, 1fr);
+  column-gap: 8mm;
+  padding: 7mm 14mm 12mm;
+  align-items: start;
+}
+
+/* Uso 4 del color: el tinte del raíl, que es gris, no guinda. El filete
+   vertical no es decoración: muchas impresoras no imprimen fondos, y sin él
+   las dos columnas se funden en una en esas impresiones. */
+.cd-rail {
+  background: var(--surface-2);
+  border-right: 0.5pt solid var(--border);
+  padding: 4mm;
+  margin-top: -1mm;
+}
+
+.cd-seccion + .cd-seccion {
+  margin-top: 4.5mm;
+}
+
+/* Uso 2 del color: el filete de 0,75 pt bajo cada encabezado de sección. */
+/* Dos párrafos seguidos sin aire se leen como uno solo mal maquetado. El paso
+   es el mínimo que separa sin abrir un hueco de sección. */
+.cd-seccion > p + p {
+  margin-top: 1.6mm;
+}
+
+.cd-seccion > h2 {
+  font-size: 10.5pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 0.75pt solid var(--accent);
+  padding-bottom: 0.8mm;
+  margin-bottom: 2.2mm;
+}
+.cd-rail .cd-seccion > h2 {
+  font-size: 9pt;
+  letter-spacing: 0.06em;
+}
+
+.cd-dato {
+  font-family: var(--cv-mono);
+  font-size: 8pt;
+  line-height: 1.4;
+  color: var(--fg-muted);
+}
+.cd-dato + .cd-dato {
+  margin-top: 1.2mm;
+}
+
+.cd-capa + .cd-capa {
+  margin-top: 1.5mm;
+}
+.cd-capa-rotulo {
+  display: block;
+  font-family: var(--cv-mono);
+  font-size: 7pt;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.cd-capa-items {
+  font-size: 8.5pt;
+}
+
+/* Lo que está en curso se marca con un cuadrado sólido, no solo con color:
+   fotocopiado el cuadrado sigue estando. */
+.cd-viva::before {
+  content: "";
+  display: inline-block;
+  width: 1.6mm;
+  height: 1.6mm;
+  margin-right: 1.5mm;
+  background: var(--accent);
+  vertical-align: 0.05em;
+}
+
+.cd-entrada + .cd-entrada {
+  margin-top: 2.5mm;
+}
+.cd-titulo {
+  font-size: 9.5pt;
+  font-weight: 600;
+}
+.cd-sub {
+  font-family: var(--cv-mono);
+  font-size: 8pt;
+  color: var(--fg-muted);
+}
+
+.cd-puesto {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4mm;
+}
+.cd-puesto-titulo {
+  font-size: 11pt;
+  font-weight: 600;
+}
+.cd-periodo {
+  font-family: var(--cv-mono);
+  font-size: 8pt;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+
+/* Un filete colgado en el canalón, no un disco: un filete es un marcador de
+   ficha; un disco es una lista de la compra. */
+.cd-logros {
+  list-style: none;
+  padding: 0;
+  margin-top: 2mm;
+}
+.cd-logros > li {
+  display: grid;
+  grid-template-columns: 3mm minmax(0, 1fr);
+  column-gap: 2mm;
+  align-items: start;
+}
+.cd-logros > li + li {
+  margin-top: 1.2mm;
+}
+.cd-logros > li::before {
+  content: "";
+  display: block;
+  height: 0.5pt;
+  background: var(--fg-muted);
+  margin-top: 0.75em;
+}
+
+/* Clientes en una celda reglada y en texto plano: nunca sus logotipos ni sus
+   colores, que sugerirían un patrocinio que no existe. */
+.cd-clientes {
+  margin-top: 2.5mm;
+  border: 0.5pt solid var(--border);
+  padding: 1.5mm 2mm;
+  display: flex;
+  align-items: baseline;
+  gap: 4mm;
+  flex-wrap: wrap;
+}
+.cd-clientes-rotulo {
+  font-family: var(--cv-mono);
+  font-size: 7pt;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.cd-clientes-lista {
+  display: flex;
+  gap: 8mm;
+  flex-wrap: wrap;
+  font-size: 9pt;
+}
+
+/* --------------------------------------------------------------------------
+   Filas de proyecto: la misma pieza que la portada, comprimida a cuatro celdas
+   regladas. Una celda reglada se lee como una lectura de instrumento; una
+   píldora de color se lee como una etiqueta de tienda.
+   -------------------------------------------------------------------------- */
+.cd-tabla {
+  border-top: 0.5pt solid var(--border);
+  border-bottom: 0.5pt solid var(--border);
+}
+/* Acotadas a `.cv-destacado`: `.fila-proyecto` es un nombre que comparten las
+   dos presentaciones porque el bloque de impresión lo necesita para
+   `break-inside: avoid`. Sin acotar, esta rejilla de cuatro celdas se comería
+   también los renglones de la lista del Clásico. */
+.cv-destacado .fila-proyecto {
+  display: grid;
+  grid-template-columns: 1.1fr 0.5fr 1.05fr 1.65fr;
+  align-items: baseline;
+}
+.cv-destacado .fila-proyecto + .fila-proyecto {
+  border-top: 0.5pt solid var(--border-soft);
+}
+.cv-destacado .fila-proyecto > * {
+  padding: 1.3mm 2mm;
+  border-left: 0.5pt solid var(--border-soft);
+  min-width: 0;
+}
+.cv-destacado .fila-proyecto > *:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+.cv-destacado .fila-proyecto > *:last-child {
+  padding-right: 0;
+}
+.fp-nombre {
+  font-weight: 600;
+  font-size: 9.5pt;
+}
+.fp-dato {
+  font-family: var(--cv-mono);
+  font-size: 7.5pt;
+  color: var(--fg-muted);
+}
+
+/* Cada cifra viaja pegada a su unidad: partir «85 / ficheros» en dos renglones
+   deja un número suelto, que es justo lo que esta sección no puede permitirse. */
+.fp-par {
+  white-space: nowrap;
+}
+/* Uso 3 del color: las cifras. Son además más grandes y de más peso que su
+   unidad, así que el color es refuerzo, no portador. */
+.fp-cifra {
+  font-family: var(--cv-mono);
+  font-size: 10pt;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.cd-totales {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6mm;
+  margin-bottom: 2mm;
+  font-family: var(--cv-mono);
+  font-size: 8pt;
+  color: var(--fg-muted);
+}
+
+.cd-nota {
+  margin-top: 1.8mm;
+  display: grid;
+  grid-template-columns: 1.6mm minmax(0, 1fr);
+  column-gap: 1.5mm;
+  align-items: start;
+  font-size: 8.5pt;
+  color: var(--fg-muted);
+}
+.cd-nota::before {
+  content: "";
+  display: block;
+  width: 1.6mm;
+  height: 1.6mm;
+  background: var(--accent);
+  margin-top: 0.45em;
+}
+
+/* El cuerpo de un proyecto es prosa, no un dato: va en la sans del documento.
+   En mono ocupaba una línea y media más por párrafo, que en un CV de una
+   página son dos proyectos menos. */
+.cd-obra-cuerpo {
+  margin-top: 0.8mm;
+  line-height: 1.42;
+}
+
+.cd-obra {
+  margin-top: 3mm;
+}
+.cd-obra-linea {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4mm;
+}
+
+.cv-destacado a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ============================================================================
+   IMPRESIÓN
+   El bloque común (tokens claros forzados, fondo blanco, `.no-imprimir`) ya
+   está en globals.css. Aquí solo lo que es propio de esta ruta.
+   ========================================================================== */
+@media print {
+  .escritorio {
+    display: block;
+    min-height: 0;
+    padding: 0;
+    background: var(--surface);
+  }
+
+  .barra-cv,
+  .volver-cv,
+  .conmutador-formato {
+    display: none !important;
+  }
+
+  /* Anula el scale() de móvil: en papel el A4 es el A4. */
+  .marco-hoja {
+    transform: none !important;
+    height: auto !important;
+  }
+
+  .hoja {
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    box-shadow: none !important;
+    /* Que el tinte del raíl y los filetes guinda salgan de verdad. */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .item-experiencia,
+  .item-formacion,
+  .fila-proyecto,
+  .cd-clientes {
+    break-inside: avoid;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Variante «Soporte TI»
+   ---------------------------------------------------------------------------
+   Lleva tres bloques de proyecto con cuerpo de prosa en lugar de una tabla de
+   una línea, así que el ritmo vertical se aprieta un milímetro por junta para
+   que el documento siga cabiendo en una página. Es el ajuste mínimo: bajar el
+   cuerpo o el interlineado costaría legibilidad, y este documento se lee en
+   papel.
+   ------------------------------------------------------------------------ */
+.cv-operaciones .cd-seccion + .cd-seccion {
+  margin-top: 4.4mm;
+}
+
+.cv-operaciones .cd-obra + .cd-obra {
+  margin-top: 2.6mm;
+}

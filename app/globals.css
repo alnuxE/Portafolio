@@ -1,85 +1,653 @@
 @import "tailwindcss";
+@import "./motion.css";
 
+/* ============================================================================
+   ESCALA — no depende del tema, así que vive fuera de los bloques de paleta.
+   Interpolada entre 360 px y 1440 px de ancho de ventana.
+   ========================================================================== */
 :root {
-  --bg-page: #FFF9F0;
-  --text-page: #4A3F35;
-  --accent: #D97757;
-  --accent-light: rgba(217, 119, 87, 0.1);
-  --accent-hover: #c26244;
-  --bg-sec: #F4EBE1;
-  --bg-sec-hover: #EAE0D3;
-  --border-line: #EADAC5;
-  --bg-card: rgba(249, 243, 234, 0.5);
-  --card-hover-shadow: rgba(217, 119, 87, 0.4);
+  --fs-display: clamp(2.25rem, 1.15rem + 4.8vw, 4.25rem);
+  --fs-h2:      clamp(1.5rem, 1.15rem + 1.5vw, 2.125rem);
+  --fs-h3:      clamp(1.125rem, 1rem + 0.55vw, 1.4375rem);
+  --fs-lead:    clamp(1.0625rem, 1rem + 0.45vw, 1.3125rem);
+  --fs-metric:  clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+  --fs-body:    clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  --fs-small:   0.875rem;
+  --fs-mono-sm: 0.8125rem;
+  --fs-label:   0.6875rem;
+
+  --page-max: 76rem;
+  --content: 64rem;
+  --measure: 66ch;
+  --measure-lead: 44ch;
+  --margin-col: 10.5rem;
+
+  --r-sm: 2px;
+  --r: 4px;
+  --r-lg: 6px;
+  --t: 120ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
+/* ============================================================================
+   TEMA CLARO — «papel de delineante».
+   Fondo gris-azulado frío (mesa de dibujo) con hojas blancas encima. No es
+   crema: crema cálido + terracota es hoy la firma de una página generada.
+   ========================================================================== */
+:root {
+  color-scheme: light;
+
+  --bg: #edeff2;
+  --bg-2: #e2e6eb;
+  --surface: #ffffff;
+  --surface-2: #f6f8fa;
+
+  --border: #b9c2cb;
+  --border-soft: #dce2e8;
+  --grid-line: rgba(18, 23, 28, 0.07);
+
+  --fg: #12171c;
+  --fg-muted: #4c565f;
+  --fg-faint: #616c77;
+
+  /* Acento — guinda IPN. */
+  --accent: #8e1b3f;
+  --accent-2: #6e1230;
+  --on-accent: #ffffff;
+  --accent-soft: #f7e3ea;
+  --ring: #8e1b3f;
+
+  /* Valor completo de box-shadow, no un color. */
+  --shadow: 0 1px 2px rgba(18, 23, 28, 0.06), 0 8px 24px -12px rgba(18, 23, 28, 0.22);
+
+  /* Marca de producto: hex exactos, idénticos en los dos temas. Solo para el
+     logotipo y como entrada de color-mix(). Nunca como texto. */
+  --brand-classly: #0362d6;
+  --brand-prompt: #7c5cff;
+  --brand-switch: #0d6e6e;
+
+  /* Variante de cada marca apta para texto y trazos finos en este tema. */
+  --brand-classly-fg: #0a56b8;
+  --brand-prompt-fg: #5b34e0;
+  --brand-switch-fg: #0d6e6e;
+  --brand-nebula-fg: var(--fg);
+}
+
+/* ============================================================================
+   TEMA OSCURO — «instrumento». No es el claro invertido: fondo de pizarra azul
+   (el negro puro con tinta blanca produce halos en OLED) y el guinda sube a
+   rosa mexicano, porque un guinda oscuro sobre fondo oscuro desaparece.
+   ========================================================================== */
 .dark {
-  --bg-page: #2C2825;
-  --text-page: #E8E5E1;
-  --accent: #E58D70;
-  --accent-light: rgba(229, 141, 112, 0.1);
-  --accent-hover: #D97757;
-  --bg-sec: #3D3733;
-  --bg-sec-hover: #4A433E;
-  --border-line: #4A433E;
-  --bg-card: rgba(54, 49, 45, 0.4);
-  --card-hover-shadow: rgba(26, 24, 22, 0.5);
+  color-scheme: dark;
+
+  --bg: #0f1319;
+  --bg-2: #0a0e13;
+  --surface: #161c24;
+  --surface-2: #1d2430;
+
+  --border: #333d4a;
+  --border-soft: #212933;
+  --grid-line: rgba(231, 235, 240, 0.055);
+
+  --fg: #e7ebf0;
+  --fg-muted: #9ba7b4;
+  --fg-faint: #7e8a97;
+
+  --accent: #f0517e;
+  --accent-2: #ff7098;
+  --on-accent: #1a0810; /* tinta oscura, NO blanco: blanco sobre el rosa da 3:1 */
+  --accent-soft: #35131f;
+  --ring: #ff7098;
+
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+
+  --brand-classly: #0362d6;
+  --brand-prompt: #7c5cff;
+  --brand-switch: #0d6e6e;
+
+  --brand-classly-fg: #5fa0ff;
+  --brand-prompt-fg: #a794ff;
+  --brand-switch-fg: #35bdbd;
+  --brand-nebula-fg: var(--fg);
 }
 
-body {
-  background: var(--bg-page);
-  color: var(--text-page);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* ============================================================================
+   Puente con Tailwind v4. `inline` hace que Tailwind emita var(--bg) en lugar
+   de copiar el valor, que es lo que permite que el cambio de tema funcione.
+   ========================================================================== */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-faint: var(--fg-faint);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-on-accent: var(--on-accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-ring: var(--ring);
+
+  --color-brand-classly: var(--brand-classly);
+  --color-brand-prompt: var(--brand-prompt);
+  --color-brand-switch: var(--brand-switch);
+
+  --radius-sm: var(--r-sm);
+  --radius: var(--r);
+  --radius-lg: var(--r-lg);
+
+  --font-display: var(--font-martian), ui-monospace, "SFMono-Regular", monospace;
+  --font-sans: var(--font-plex-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
 }
 
-/* Animaciones personalizadas */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+@layer base {
+  html {
+    transition: background-color 160ms linear, color 160ms linear;
+    scroll-behavior: smooth;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--fg);
+  }
+
+  /* Un hueco de 2 px antes del anillo. Sin él, el anillo guinda sobre el CTA
+     guinda es invisible. Dentro de una tarjeta se redefine --focus-bg. */
+  :where(a, button, summary, input, [tabindex]):focus-visible {
+    outline: none;
+    border-radius: var(--r);
+    box-shadow: 0 0 0 2px var(--focus-bg, var(--bg)), 0 0 0 4px var(--ring);
+  }
+
+  :where(button, a) {
+    transition: background-color var(--t), border-color var(--t), color var(--t),
+      box-shadow var(--t), text-decoration-color var(--t);
+  }
+
+  [id] {
+    scroll-margin-top: 1.5rem;
   }
 }
 
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
-}
+@layer components {
+  /* --- Tipografía compuesta ------------------------------------------------ */
 
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
+  /* El nombre. Una sola vez en toda la página: la voz de display es la mono con
+     la que escribe, compactada por el eje de anchura hasta ser un bloque. */
+  .t-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-variation-settings: "wdth" 87.5;
+    font-size: var(--fs-display);
+    letter-spacing: -0.03em;
+    line-height: 0.98;
+    text-wrap: balance;
   }
-  to {
-    opacity: 1;
-    transform: scale(1);
+
+  .t-h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-variation-settings: "wdth" 92;
+    font-size: var(--fs-h2);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .t-h3 {
+    font-weight: 600;
+    font-size: var(--fs-h3);
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+
+  .t-lead {
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    max-width: var(--measure-lead);
+    text-wrap: pretty;
+  }
+
+  .t-body {
+    max-width: var(--measure);
+    text-wrap: pretty;
+  }
+
+  /* Cifras de instrumento: tabulares para que las columnas cuadren de verdad. */
+  .t-metric {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-variation-settings: "wdth" 87.5;
+    font-size: var(--fs-metric);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .t-mono {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: var(--fs-mono-sm);
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Versales: solo aquí. Nunca como antetítulo sobre un h2 — ésa es la regla
+     que separa «ficha técnica» de «plantilla». */
+  .t-label {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: var(--fs-label);
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+  }
+
+  .t-colofon {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: var(--fs-label);
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    color: var(--fg-faint);
+  }
+
+  /* --- Retícula ------------------------------------------------------------ */
+
+  .envoltura {
+    width: 100%;
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 1024px) {
+    .envoltura {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  /* Plano con margen acotado: la columna izquierda no es decoración, es donde
+     viven los datos que en un plano técnico viven en el margen. */
+  .plano {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.75rem;
+  }
+  @media (min-width: 1024px) {
+    .plano {
+      grid-template-columns: var(--margin-col) minmax(0, 1fr);
+      column-gap: 2.5rem;
+      row-gap: 0;
+    }
+  }
+  @media (min-width: 1280px) {
+    :root {
+      --margin-col: 12rem;
+    }
+  }
+
+  /* Lo que está en el margen no desaparece al colapsar: pasa a ser una línea de
+     datos encima de su contenido, separada por un filete. */
+  .margen {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: var(--fs-label);
+    letter-spacing: 0.04em;
+    color: var(--fg-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 1023px) {
+    .margen {
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-soft);
+    }
+  }
+
+  /* El filete entre secciones es lo que hace que la página se lea como un
+     documento paginado y no como una pila de tarjetas. */
+  .seccion {
+    padding-block: 3.5rem;
+    border-top: 1px solid var(--border-soft);
+  }
+  @media (min-width: 1024px) {
+    .seccion {
+      padding-block: 7rem;
+    }
+  }
+
+  /* --- El sustrato: papel milimetrado ------------------------------------- */
+
+  .substrato {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to right, color-mix(in srgb, var(--grid-line) 50%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--grid-line) 50%, transparent) 1px, transparent 1px);
+    background-size: 64px 64px, 64px 64px, 8px 8px, 8px 8px;
+    mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+  }
+  .substrato-invertido {
+    mask-image: linear-gradient(to top, #000 0%, #000 55%, transparent 100%);
+  }
+  /* A 360 px la retícula fina se convierte en trama y vibra. */
+  @media (max-width: 639px) {
+    .substrato {
+      background-image:
+        linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+      background-size: 64px 64px, 64px 64px;
+    }
+  }
+
+  /* --- El cuadro de rótulo ------------------------------------------------- */
+
+  .rotulo {
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .rotulo-franja {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 2rem;
+    padding-inline: 0.75rem;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--surface-2);
+  }
+
+  .rotulo-celda {
+    padding: 0.75rem;
+    border-top: 1px solid var(--border-soft);
+    border-left: 1px solid var(--border-soft);
+    min-width: 0;
+  }
+  .rotulo-celda:first-child {
+    border-left: 0;
+  }
+
+  /* --- Controles ----------------------------------------------------------- */
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding-inline: 1.25rem;
+    border: 1px solid transparent;
+    border-radius: var(--r);
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .btn:hover {
+    background: var(--accent-2);
+  }
+  .btn:active {
+    background: var(--accent-2);
+    transform: translateY(1px);
+  }
+  .btn[disabled] {
+    background: var(--bg-2);
+    color: var(--fg-faint);
+    border-color: var(--border);
+    cursor: not-allowed;
+  }
+  @media (min-width: 1024px) {
+    .btn {
+      min-height: 40px;
+    }
+  }
+
+  .btn-fantasma {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding-inline: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    background: transparent;
+    color: var(--fg-muted);
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+  .btn-fantasma:hover {
+    background: var(--surface-2);
+    color: var(--fg);
+    border-color: var(--fg-faint);
+  }
+  .btn-fantasma:active {
+    background: var(--bg-2);
+  }
+  .btn-fantasma[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+    font-weight: 600;
+  }
+  @media (min-width: 1024px) {
+    .btn-fantasma {
+      min-height: 40px;
+    }
+  }
+
+  /* El subrayado existe desde el reposo: un enlace que solo se subraya en hover
+     no es descubrible con el teclado ni para quien no distingue el color. */
+  .enlace {
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .enlace:hover {
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+  }
+  .enlace:active {
+    color: var(--accent-2);
+  }
+
+  /* --- Piezas de datos ----------------------------------------------------- */
+
+  .tarjeta {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left-width: 3px;
+    border-left-color: var(--canto, var(--border));
+    border-radius: var(--r);
+    padding: 1.25rem;
+    --focus-bg: var(--surface);
+  }
+  @media (min-width: 1024px) {
+    .tarjeta {
+      padding: 1.5rem;
+    }
+  }
+
+  /* El pozo: la cifra sola en su celda, con la unidad debajo y filetes a los
+     lados. Es la forma de una lectura, no la de una insignia. */
+  .pozo {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    background: var(--surface-2);
+    border-block: 1px solid var(--border-soft);
+  }
+
+  .pozo-celda {
+    padding: 0.75rem 0.5rem;
+    border-left: 1px solid var(--border-soft);
+    text-align: center;
+    min-width: 0;
+  }
+  .pozo-celda:first-child {
+    border-left: 0;
+  }
+  @media (max-width: 639px) {
+    .pozo-celda {
+      padding: 0.625rem 0.25rem;
+    }
+    .pozo .t-metric {
+      font-size: 1.5rem;
+    }
+    .pozo .t-label {
+      font-size: 0.625rem;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  /* Único marcador de acento fuera del CTA y el foco: lo que está en curso. */
+  .marca-viva::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    margin-right: 0.75rem;
+    vertical-align: 0.05em;
+  }
+
+  /* Un filete colgado en el canalón, no un disco: un filete es marcador de
+     ficha; un disco es lista de la compra. */
+  .logro {
+    display: grid;
+    grid-template-columns: 10px minmax(0, 1fr);
+    column-gap: 0.75rem;
+    align-items: start;
+  }
+  .logro::before {
+    content: "";
+    display: block;
+    height: 1px;
+    background: var(--border);
+    margin-top: 0.8em;
+  }
+
+  /* --- Raíl de navegación --------------------------------------------------- */
+
+  .rail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    height: 28px;
+    color: var(--fg-faint);
+    --focus-bg: var(--bg);
+  }
+  .rail-filete {
+    display: block;
+    width: 12px;
+    height: 1px;
+    background: var(--border);
+    flex: none;
+    transition: width var(--t), background-color var(--t), height var(--t);
+  }
+  .rail-item:hover .rail-filete {
+    width: 20px;
+    background: var(--fg-muted);
+  }
+  .rail-item:hover {
+    color: var(--fg);
+  }
+  .rail-item[aria-current="true"] {
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .rail-item[aria-current="true"] .rail-filete {
+    width: 24px;
+    height: 2px;
+    background: var(--accent);
   }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
+/* ============================================================================
+   IMPRESIÓN — el tema oscuro no se imprime nunca. Sin esto, quien tenga el
+   sitio en oscuro y pulse Ctrl+P se lleva una página negra.
+   ========================================================================== */
+@page {
+  size: A4;
+  margin: 0;
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+@media print {
+  :root,
+  .dark {
+    --bg: #ffffff;
+    --bg-2: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #ededed;
+    --border: #b8b8b8;
+    --border-soft: #dcdcdc;
+    --fg: #111111;
+    --fg-muted: #3a3a3a;
+    --fg-faint: #5e5e5e;
+    --accent: #8e1b3f;
+    --on-accent: #ffffff;
+    --shadow: none;
+    color-scheme: light;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+  }
+
+  .no-imprimir {
+    display: none !important;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+  p,
+  li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  a {
+    text-decoration: underline;
+    color: inherit;
+  }
+  a[href^="http"]::after {
+    content: none;
+  }
 }
 
-.animate-scale-in {
-  animation: scaleIn 0.6s ease-out forwards;
-}
-
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
-.delay-400 { animation-delay: 400ms; }
-
-/* Para que los elementos comiencen ocultos antes de la animación */
-.opacity-0-init {
-  opacity: 0;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
 }

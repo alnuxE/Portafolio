@@ -1,189 +1,498 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ThemeSwitcher } from "../components/theme-switcher";
-import { SideNav } from "../components/side-nav";
+import type { ReactNode } from "react";
+import { Mail, MapPin } from "lucide-react";
 
+import { GithubIcon, LinkedinIcon } from "../components/icons";
+
+import { ThemeSwitcher } from "../components/theme-switcher";
+import { RailNav } from "../components/rail-nav";
+import { ScrollProgress } from "../components/scroll-progress";
+import { Monogram } from "../components/brand/monogram";
+import {
+  ClasslyMark,
+  PromptEngineMark,
+  SwitchIotMark,
+} from "../components/brand/project-logos";
+import {
+  apps,
+  education,
+  experience,
+  profile,
+  sections,
+  stackLayers,
+  totals,
+  work,
+  type ProjectBrand,
+} from "../content/site";
+
+/* La marca y el canto de cada producto, resueltos en un solo sitio. El canto
+   usa la variante `-fg` del color: el hex exacto de marca no es legible como
+   trazo fino en los dos temas, y un canto es un trazo fino. */
+const MARCAS: Record<
+  ProjectBrand,
+  { Mark: (p: { className?: string }) => ReactNode; canto: string }
+> = {
+  classly: { Mark: ClasslyMark, canto: "var(--brand-classly-fg)" },
+  prompt: { Mark: PromptEngineMark, canto: "var(--brand-prompt-fg)" },
+  switch: { Mark: SwitchIotMark, canto: "var(--brand-switch-fg)" },
+  nebula: { Mark: () => null, canto: "var(--fg)" },
+};
+
+/** Una celda del cuadro de rótulo: rótulo arriba, dato, y matiz debajo. */
+function CeldaRotulo({
+  rotulo,
+  valor,
+  nota,
+}: {
+  rotulo: string;
+  valor: string;
+  nota: string;
+}) {
+  return (
+    <div className="bg-surface p-3">
+      <p className="t-label">{rotulo}</p>
+      <p
+        className="mt-1.5 font-[family-name:var(--font-display)] text-fg tabular-nums"
+        style={{ fontVariationSettings: '"wdth" 87.5', fontWeight: 500 }}
+      >
+        {valor}
+      </p>
+      <p className="t-mono mt-0.5 text-fg-muted">{nota}</p>
+    </div>
+  );
+}
+
+/** Una lectura de instrumento: la cifra sola, con su unidad debajo. */
+function Lectura({ valor, unidad }: { valor: string; unidad: string }) {
+  return (
+    <div className="pozo-celda">
+      <p className="t-metric text-fg">{valor}</p>
+      <p className="t-label mt-1.5">{unidad}</p>
+    </div>
+  );
+}
 
 export default function Home() {
+  const [puesto] = experience;
+
   return (
-    <div className="min-h-screen font-sans selection:bg-[var(--accent-light)] transition-colors duration-300">
-      <SideNav />
-      {/* Elementos flotantes decorativos cálidos */}
-      <div className="fixed inset-0 -z-10 h-full w-full bg-[var(--bg-page)] overflow-hidden transition-colors duration-300">
-        <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-[var(--accent-light)] rounded-full blur-3xl animate-float opacity-70"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[var(--accent-light)] rounded-full blur-3xl animate-float delay-300 opacity-60"></div>
+    <div className="relative min-h-screen">
+      {/* El papel milimetrado no es textura: es el soporte del que el cuadro de
+          rótulo forma parte. Solo aparece donde la página se presenta como
+          documento — al abrir y al cerrar. */}
+      <div
+        aria-hidden="true"
+        className="substrato pointer-events-none absolute inset-x-0 top-0 -z-10 h-[46rem]"
+      />
+
+      <ScrollProgress />
+
+      {/* En móvil el conmutador sale del cuadro de rótulo: ahí no compite con
+          nada, y a 360 px de ancho el cuadro no tiene sitio para él. */}
+      <div className="fixed right-3 top-3 z-40 h-11 w-11 border border-border bg-surface sm:hidden">
+        <ThemeSwitcher compacto />
       </div>
 
-      <main className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-20 flex flex-col gap-16 md:gap-24 relative z-10">
+      <div className="envoltura">
+        <div className="lg:grid lg:grid-cols-[var(--margin-col)_minmax(0,1fr)] lg:gap-x-10">
+          <aside className="hidden lg:block">
+            <RailNav />
+          </aside>
 
-        {/* Header / Hero Section */}
-        <section id="inicio" className="flex flex-col gap-6 opacity-0-init animate-fade-in-up">
-          <div className="space-y-4">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[var(--text-page)] transition-colors duration-300">
-              Daniel Alejandro Estrada Olalde
-            </h1>
-            <h2 className="text-xl sm:text-2xl md:text-3xl text-[var(--accent)] font-medium tracking-wide flex flex-wrap items-center gap-2 transition-colors duration-300">
-              Estudiante Ing. Informática
-              <span className="inline-block animate-bounce text-sm ml-1 md:ml-2">✨</span>
-            </h2>
-            <p className="text-[var(--text-page)]/80 text-base sm:text-lg md:text-xl max-w-2xl leading-relaxed mt-4 font-medium transition-colors duration-300">
-              Soy estudiante de séptimo semestre en el Politécnico Nacional. Colaboro en proyectos para grandes empresas, combinando aprendizaje rápido y enfoque práctico para resolver problemas eficientemente en arquitecturas Backend.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-start gap-3 sm:gap-4 mt-4 md:mt-6">
-            <Link href="/cv" className="px-5 sm:px-7 py-2.5 sm:py-3 text-sm sm:text-base rounded-full bg-black dark:bg-[#E8E5E1] text-white dark:text-black font-bold border border-transparent hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
-              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-              Ver CV Clásico
-            </Link>
-            <ThemeSwitcher />
-          </div>
-        </section>
-
-        {/* Experience Section */}
-        <section id="experiencia" className="scroll-mt-20 md:scroll-mt-24 opacity-0-init animate-fade-in-up delay-200">
-          <h3 className="text-2xl md:text-3xl font-semibold mb-8 md:mb-10 flex items-center gap-3 md:gap-4 text-[var(--text-page)] transition-colors duration-300">
-            <span className="w-8 md:w-10 h-[3px] bg-[var(--accent)] rounded-full"></span>
-            Experiencia Laboral
-          </h3>
-
-          <div className="relative border-l-2 border-[var(--border-line)] pl-6 md:pl-8 ml-2 md:ml-3 transition-colors duration-300">
-            {/* Punto indicador de la línea de tiempo */}
-            <div className="absolute w-4 h-4 bg-[var(--bg-page)] border-4 border-[var(--accent)] rounded-full -left-[9px] top-1.5 shadow-sm animate-pulse transition-colors duration-300"></div>
-
-            <div className="flex flex-col gap-3 group relative bg-[var(--bg-card)] backdrop-blur-md p-5 md:p-6 rounded-2xl border border-transparent hover:border-[var(--accent)] transition-all duration-300 hover:shadow-lg">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2 md:gap-4">
-                <h4 className="text-xl md:text-2xl font-bold text-[var(--text-page)] transition-colors duration-300">Fay Publicidad / Metrix</h4>
-                <span className="text-xs md:text-sm text-[var(--accent)] font-mono bg-[var(--accent-light)] px-3 md:px-4 py-1.5 rounded-full w-fit font-semibold tracking-wide transition-colors duration-300">
-                  Abril 2024 — Actual
-                </span>
+          <main className="min-w-0">
+            {/* ---------------------------------------------------------- HÉROE */}
+            <section
+              id="inicio"
+              aria-labelledby="titulo-inicio"
+              className="pb-14 pt-14 lg:pb-24 lg:pt-20"
+            >
+              <div className="anim-entrada mb-10 flex items-center gap-3 text-fg">
+                <Monogram className="h-6 w-auto" />
+                <span className="t-label">portafolio · {profile.alias}</span>
               </div>
-              <h5 className="text-base md:text-lg text-[var(--text-page)]/80 font-medium tracking-wide transition-colors duration-300">Desarrollador Backend</h5>
-              <p className="text-[var(--text-page)]/70 leading-relaxed mt-2 max-w-2xl transition-colors duration-300">
-                Mantenimiento, optimización e implementación de soluciones de software para empresas de alto calibre como Walmart y P&G. Manejo de grandes volúmenes de datos con consultas complejas en MySQL y MongoDB, utilizando Laravel y arquitectura full-stack. Uso activo de Git/GitHub para despliegues a producción.
+
+              <h1 id="titulo-inicio" className="t-display anim-entrada text-fg">
+                <span className="lg:block">Daniel Alejandro</span>{" "}
+                <span className="lg:block">Estrada Olalde</span>
+              </h1>
+
+              <p className="t-lead anim-entrada-2 mt-6 text-fg-muted">
+                {profile.headline}
               </p>
-            </div>
-          </div>
-        </section>
 
-        {/* Education Section */}
-        <section id="educacion" className="scroll-mt-20 md:scroll-mt-24 opacity-0-init animate-fade-in-up delay-300">
-          <h3 className="text-2xl md:text-3xl font-semibold mb-8 md:mb-10 flex items-center gap-3 md:gap-4 text-[var(--text-page)] transition-colors duration-300">
-            <span className="w-8 md:w-10 h-[3px] bg-[var(--accent)] rounded-full"></span>
-            Formación Académica
-          </h3>
-
-          <div className="relative border-l-2 border-[var(--border-line)] pl-6 md:pl-8 ml-2 md:ml-3 transition-colors duration-300 flex flex-col gap-8 md:gap-10">
-            {/* IPN */}
-            <div className="relative">
-              <div className="absolute w-4 h-4 bg-[var(--bg-page)] border-4 border-[var(--accent)] rounded-full -left-[33px] md:-left-[41px] top-1.5 shadow-sm transition-colors duration-300"></div>
-              <div className="flex flex-col gap-2 group relative border border-transparent hover:border-[var(--accent)] p-4 md:p-5 -mt-3 rounded-2xl transition-all duration-300 hover:bg-[var(--bg-sec)]/30">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
-                  <h4 className="text-lg md:text-xl font-bold text-[var(--text-page)] transition-colors duration-300">Ingeniería en Informática</h4>
-                  <span className="text-xs text-[var(--accent)] font-mono bg-[var(--accent-light)] px-3 py-1 rounded-full w-fit font-semibold tracking-wide transition-colors duration-300">
-                    Séptimo Semestre
-                  </span>
+              <div className="anim-trazo rotulo mt-10 max-w-[46rem]">
+                <div className="rotulo-franja">
+                  <span className="t-label">ficha</span>
+                  <div className="-mr-3 hidden self-stretch border-l border-border-soft sm:block">
+                    <ThemeSwitcher className="!h-full w-auto px-3" />
+                  </div>
                 </div>
-                <h5 className="text-sm md:text-base text-[var(--text-page)]/80 font-medium transition-colors duration-300">Instituto Politécnico Nacional (IPN)</h5>
-              </div>
-            </div>
 
-            {/* Oracle Next Education */}
-            <div className="relative">
-              <div className="absolute w-4 h-4 bg-[var(--bg-page)] border-4 border-[var(--accent)]/50 rounded-full -left-[33px] md:-left-[41px] top-1.5 shadow-sm transition-colors duration-300"></div>
-              <div className="flex flex-col gap-2 group relative border border-transparent hover:border-[var(--accent)] p-4 md:p-5 -mt-3 rounded-2xl transition-all duration-300 hover:bg-[var(--bg-sec)]/30">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
-                  <h4 className="text-lg md:text-xl font-bold text-[var(--text-page)] transition-colors duration-300">Programador Junior Java</h4>
-                  <span className="text-xs text-[var(--text-page)]/60 font-mono px-3 py-1 rounded-full w-fit transition-colors duration-300 border border-[var(--border-line)]">
-                    2022 — Jun 2023
-                  </span>
+                <div className="grid grid-cols-2 gap-px bg-border-soft sm:grid-cols-4">
+                  <CeldaRotulo
+                    rotulo="Rol"
+                    valor="Backend"
+                    nota="desarrollador"
+                  />
+                  <CeldaRotulo
+                    rotulo="Desde"
+                    valor="abr 2024"
+                    nota="Fay · Metrix"
+                  />
+                  <CeldaRotulo
+                    rotulo="Apps"
+                    valor={String(totals.apps)}
+                    nota="publicadas"
+                  />
+                  <CeldaRotulo
+                    rotulo="Pruebas"
+                    valor={String(totals.tests)}
+                    nota="automatizadas"
+                  />
                 </div>
-                <h5 className="text-sm md:text-base text-[var(--text-page)]/80 font-medium transition-colors duration-300">Oracle Next Education | CDMX</h5>
-              </div>
-            </div>
 
-            {/* Bachilleres */}
-            <div className="relative">
-              <div className="absolute w-4 h-4 bg-[var(--bg-page)] border-4 border-[var(--accent)]/50 rounded-full -left-[33px] md:-left-[41px] top-1.5 shadow-sm transition-colors duration-300"></div>
-              <div className="flex flex-col gap-2 group relative border border-transparent hover:border-[var(--accent)] p-4 md:p-5 -mt-3 rounded-2xl transition-all duration-300 hover:bg-[var(--bg-sec)]/30">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
-                  <h4 className="text-lg md:text-xl font-bold text-[var(--text-page)] transition-colors duration-300">Informática Programador</h4>
-                  <span className="text-xs text-[var(--text-page)]/60 font-mono px-3 py-1 rounded-full w-fit transition-colors duration-300 border border-[var(--border-line)]">
-                    Ago 2016 — Jul 2019
-                  </span>
+                <div className="grid grid-cols-1 gap-px border-t border-border-soft bg-border-soft sm:grid-cols-[1fr_1fr_2fr]">
+                  <CeldaRotulo rotulo="Centro" valor="IPN" nota="CDMX" />
+                  <CeldaRotulo
+                    rotulo="Avance"
+                    valor="9.º semestre"
+                    nota="último"
+                  />
+                  <CeldaRotulo
+                    rotulo="Carrera"
+                    valor="Ing. Informática"
+                    nota="titulación en curso"
+                  />
                 </div>
-                <h5 className="text-sm md:text-base text-[var(--text-page)]/80 font-medium transition-colors duration-300">Colegio de Bachilleres Plantel Nº 6</h5>
               </div>
-            </div>
 
-          </div>
-        </section>
-
-        {/* Projects Section (Templates) */}
-        <section id="proyectos" className="scroll-mt-20 md:scroll-mt-24 opacity-0-init animate-fade-in-up delay-400">
-          <h3 className="text-2xl md:text-3xl font-semibold mb-8 md:mb-10 flex items-center gap-3 md:gap-4 text-[var(--text-page)] transition-colors duration-300">
-            <span className="w-8 md:w-10 h-[3px] bg-[var(--accent)] rounded-full"></span>
-            Proyectos Destacados
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Project Template 1 */}
-            <div className="group rounded-3xl border border-[var(--border-line)] bg-[var(--bg-card)] backdrop-blur-md p-6 hover:border-[var(--accent)] transition-all duration-500 hover:shadow-xl hover:-translate-y-2 flex flex-col items-start gap-5 cursor-pointer animate-scale-in">
-              <div className="w-full h-52 bg-[var(--bg-sec)] rounded-2xl relative overflow-hidden flex items-center justify-center border border-[var(--border-line)] group-hover:border-[var(--accent)] transition-colors duration-500">
-                <span className="text-[var(--accent)] font-medium text-lg opacity-70">✨ Imagen del Proyecto</span>
+              <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
+                <Link href="/cv" className="btn w-full sm:w-auto">
+                  Ver currículum
+                </Link>
+                <ul className="t-mono flex flex-wrap items-center gap-x-6 gap-y-3">
+                  <li>
+                    <a className="enlace" href={profile.githubUrl}>
+                      GitHub
+                    </a>
+                  </li>
+                  <li>
+                    <a className="enlace" href={profile.linkedinUrl}>
+                      LinkedIn
+                    </a>
+                  </li>
+                  <li>
+                    <a className="enlace" href={`mailto:${profile.email}`}>
+                      {profile.email}
+                    </a>
+                  </li>
+                </ul>
               </div>
-              <div className="w-full">
-                <h4 className="text-xl font-bold text-[var(--text-page)] group-hover:text-[var(--accent)] transition-colors duration-300">Nebula Web</h4>
-                <p className="text-[var(--text-page)]/70 text-sm line-clamp-3 mt-3 leading-relaxed transition-colors duration-300">
-                  Sistema de analitica de datos para torneos de free fire
+            </section>
+
+            {/* ---------------------------------------------------------- STACK */}
+            <section
+              id="stack"
+              aria-labelledby="titulo-stack"
+              className="seccion"
+            >
+              <h2 id="titulo-stack" className="t-h2 text-fg">
+                Stack
+              </h2>
+              <p className="t-body mt-4 text-fg-muted">
+                Agrupado por capas, que es como lo pienso cuando construyo.
+              </p>
+
+              <div className="-mx-3 mt-8">
+                {stackLayers.map((capa) => (
+                  <div
+                    key={capa.id}
+                    className={`grid gap-x-8 gap-y-2 border-t border-border-soft px-3 py-4 lg:grid-cols-[9rem_minmax(0,1fr)] ${
+                      capa.viva ? "bg-accent-soft" : ""
+                    }`}
+                  >
+                    <p className={`t-label ${capa.viva ? "marca-viva" : ""}`}>
+                      {capa.label}
+                    </p>
+                    <ul className="t-mono flex flex-wrap gap-x-8 gap-y-2 text-fg">
+                      {capa.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* ------------------------------------------------------ PROYECTOS */}
+            <section
+              id="proyectos"
+              aria-labelledby="titulo-proyectos"
+              className="seccion"
+            >
+              <h2 id="titulo-proyectos" className="t-h2 text-fg">
+                Proyectos
+              </h2>
+              <p className="t-body mt-4 text-fg-muted">
+                Tres aplicaciones propias, diseñadas y publicadas de principio a
+                fin, y un sistema en producción para cliente. El código es
+                privado, así que aquí van las cifras.
+              </p>
+
+              {/* El total de la tabla, antes de las filas. */}
+              <div className="pozo mt-8 border-y border-border">
+                <Lectura valor={String(totals.apps)} unidad="apps propias" />
+                <Lectura valor={String(totals.tests)} unidad="pruebas" />
+                <Lectura
+                  valor={String(totals.files)}
+                  unidad="ficheros Dart"
+                />
+              </div>
+
+              <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {apps.map((app) => {
+                  const { Mark, canto } = MARCAS[app.brand];
+                  return (
+                    <article
+                      key={app.id}
+                      className="tarjeta group"
+                      style={{ ["--canto" as string]: canto }}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <Mark className="h-10 w-10 shrink-0" />
+                        <span className="t-mono text-fg-faint">
+                          v{app.version}
+                        </span>
+                      </div>
+
+                      <h3 className="t-h3 mt-4 text-fg">{app.name}</h3>
+                      {/* Alto mínimo de cuatro líneas: sin él cada descripción
+                          empuja su pozo a una altura distinta y las cifras dejan
+                          de compararse en vertical, que es toda la razón de la
+                          pieza. En una sola columna no hace falta. */}
+                      <p className="mb-6 mt-2 text-[length:var(--fs-small)] leading-relaxed text-fg-muted sm:min-h-[6rem]">
+                        {app.tagline}
+                      </p>
+
+                      {/* `mt-auto` empuja el pozo al pie de la tarjeta: las tres
+                          comparten rejilla, así que 150 / 320 / 338 se comparan en
+                          vertical de un vistazo. Ésa es toda la razón de la pieza. */}
+                      <div className="pozo -mx-5 lg:-mx-6">
+                        <Lectura valor={String(app.tests)} unidad="pruebas" />
+                        <Lectura valor={String(app.files)} unidad="ficheros" />
+                        <Lectura
+                          valor={String(app.platforms.length)}
+                          unidad="plataformas"
+                        />
+                      </div>
+
+                      <p className="t-mono mt-4 flex flex-wrap justify-between gap-x-4 gap-y-1 text-fg-faint">
+                        <span className="text-fg-muted">
+                          {app.platforms.join(" · ")}
+                        </span>
+                        <span>código privado</span>
+                      </p>
+
+                      {app.note ? (
+                        <p className="marca-viva mt-4 text-[length:var(--fs-small)] leading-snug text-fg-muted">
+                          {app.note}
+                        </p>
+                      ) : null}
+                    </article>
+                  );
+                })}
+              </div>
+
+              <div className="plano mt-10">
+                <p className="margen lg:pt-1">trabajo profesional</p>
+                <article
+                  className="tarjeta"
+                  style={{ ["--canto" as string]: MARCAS.nebula.canto }}
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <h3 className="t-h3 text-fg">{work.name}</h3>
+                    <span className="t-mono text-fg-faint">{work.client}</span>
+                  </div>
+                  <p className="t-body mt-3 text-[length:var(--fs-small)] leading-relaxed text-fg-muted">
+                    {work.summary}
+                  </p>
+                  <div className="pozo -mx-5 mt-5 grid-cols-2 grid-flow-row sm:grid-flow-col lg:-mx-6">
+                    {work.fields.map((campo) => (
+                      <div key={campo.label} className="pozo-celda !text-left">
+                        <p className="t-label">{campo.label}</p>
+                        {campo.value.map((linea) => (
+                          <p key={linea} className="t-mono mt-1 text-fg">
+                            {linea}
+                          </p>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            {/* ----------------------------------------------------- EXPERIENCIA */}
+            <section
+              id="experiencia"
+              aria-labelledby="titulo-experiencia"
+              className="seccion"
+            >
+              <h2 id="titulo-experiencia" className="t-h2 text-fg">
+                Experiencia
+              </h2>
+
+              <div className="plano mt-8">
+                <p className="margen lg:pt-1.5">{puesto.periodShort}</p>
+                <div>
+                  <h3 className="t-h3 text-fg">{puesto.role}</h3>
+                  <p className="t-mono mt-1 text-fg-muted">{puesto.company}</p>
+
+                  <ul className="mt-6 flex flex-col gap-2.5">
+                    {puesto.highlights.map((linea) => (
+                      <li key={linea} className="logro text-fg-muted">
+                        {linea}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-6 border border-border-soft bg-surface-2 p-4">
+                    <p className="t-label">Clientes</p>
+                    <ul className="mt-2 flex flex-wrap gap-x-8 gap-y-1 text-fg">
+                      {puesto.clients.map((cliente) => (
+                        <li key={cliente}>{cliente}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* ------------------------------------------------------- FORMACIÓN */}
+            <section
+              id="formacion"
+              aria-labelledby="titulo-formacion"
+              className="seccion"
+            >
+              <h2 id="titulo-formacion" className="t-h2 text-fg">
+                Formación
+              </h2>
+
+              <div className="mt-8">
+                {education.map((estudio, i) => (
+                  <div
+                    key={estudio.title}
+                    className={`plano gap-y-1 py-5 ${
+                      i > 0 ? "border-t border-border-soft" : ""
+                    }`}
+                  >
+                    <p className="margen lg:pt-1.5">{estudio.period}</p>
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                      <div>
+                        <h3
+                          className={`t-h3 text-fg ${
+                            estudio.current ? "marca-viva" : ""
+                          }`}
+                        >
+                          {estudio.title}
+                        </h3>
+                        <p className="t-mono mt-1 text-fg-muted">
+                          {estudio.school}
+                        </p>
+                      </div>
+                      {estudio.detail ? (
+                        <p className="t-mono text-fg-faint">{estudio.detail}</p>
+                      ) : null}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* -------------------------------------------------------- CONTACTO */}
+            <footer
+              id="contacto"
+              aria-labelledby="titulo-contacto"
+              className="substrato substrato-invertido seccion pb-16 lg:pb-20"
+            >
+              <h2 id="titulo-contacto" className="t-h2 text-fg">
+                ¿Hablamos?
+              </h2>
+
+              <div className="rotulo mt-8">
+                <div className="grid grid-cols-1 gap-px bg-border-soft sm:grid-cols-2 lg:grid-cols-4">
+                  <a
+                    href={`mailto:${profile.email}`}
+                    className="flex min-h-14 flex-col justify-center bg-surface p-3 hover:bg-surface-2 [&:hover_span]:decoration-accent"
+                    style={{ ["--focus-bg" as string]: "var(--surface)" }}
+                  >
+                    <span className="t-label flex items-center gap-1.5">
+                      <Mail size={14} aria-hidden="true" /> Correo
+                    </span>
+                    <span className="t-mono mt-1 break-all text-fg underline decoration-border underline-offset-[3px]">
+                      {profile.email}
+                    </span>
+                  </a>
+                  <a
+                    href={profile.githubUrl}
+                    className="flex min-h-14 flex-col justify-center bg-surface p-3 hover:bg-surface-2 [&:hover_span]:decoration-accent"
+                    style={{ ["--focus-bg" as string]: "var(--surface)" }}
+                  >
+                    <span className="t-label flex items-center gap-1.5">
+                      <GithubIcon size={14} /> GitHub
+                    </span>
+                    <span className="t-mono mt-1 text-fg underline decoration-border underline-offset-[3px]">
+                      {profile.github}
+                    </span>
+                  </a>
+                  <a
+                    href={profile.linkedinUrl}
+                    className="flex min-h-14 flex-col justify-center bg-surface p-3 hover:bg-surface-2 [&:hover_span]:decoration-accent"
+                    style={{ ["--focus-bg" as string]: "var(--surface)" }}
+                  >
+                    <span className="t-label flex items-center gap-1.5">
+                      <LinkedinIcon size={14} /> LinkedIn
+                    </span>
+                    <span className="t-mono mt-1 text-fg underline decoration-border underline-offset-[3px]">
+                      Daniel Estrada Olalde
+                    </span>
+                  </a>
+                  <div className="flex min-h-14 flex-col justify-center bg-surface p-3">
+                    <span className="t-label flex items-center gap-1.5">
+                      <MapPin size={14} aria-hidden="true" /> Ubicación
+                    </span>
+                    <span className="t-mono mt-1 text-fg">
+                      {profile.location}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* El índice completo vive aquí donde el raíl lateral no existe. */}
+              <nav aria-label="Índice" className="mt-8 lg:hidden">
+                <ul className="t-mono flex flex-wrap gap-x-5 gap-y-2">
+                  {sections.map((seccion) => (
+                    <li key={seccion.id}>
+                      <a className="enlace" href={`#${seccion.id}`}>
+                        {seccion.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+
+              <div className="mt-10 border-t border-border-soft pt-6">
+                <p className="t-colofon">
+                  © {new Date().getFullYear()} {profile.name}
+                </p>
+                <p className="t-colofon mt-1">
+                  Next.js · Tailwind CSS · Martian Mono e IBM Plex
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2 mt-auto pt-2">
-                <span className="text-xs font-mono font-medium px-3 py-1.5 bg-[var(--accent-light)] text-[var(--accent)] rounded-lg transition-colors duration-300">Laravel</span>
-                <span className="text-xs font-mono font-medium px-3 py-1.5 bg-[var(--accent-light)] text-[var(--accent)] rounded-lg transition-colors duration-300">API</span>
-                <span className="text-xs font-mono font-medium px-3 py-1.5 bg-[var(--accent-light)] text-[var(--accent)] rounded-lg transition-colors duration-300">MongoDB</span>
-              </div>
-            </div>
-
-            {/* Project Template 2 */}
-            <div className="group rounded-3xl border border-[var(--border-line)] bg-[var(--bg-card)] backdrop-blur-md p-6 hover:border-[var(--accent)] transition-all duration-500 hover:shadow-xl hover:-translate-y-2 flex flex-col items-start gap-5 cursor-pointer animate-scale-in delay-100">
-              <div className="w-full h-52 bg-[var(--bg-sec)] rounded-2xl relative overflow-hidden flex items-center justify-center border border-[var(--border-line)] group-hover:border-[var(--accent)] transition-colors duration-500">
-                <span className="text-[var(--accent)] font-medium text-lg opacity-70">✨ Imagen del Proyecto</span>
-              </div>
-              <div className="w-full">
-                <h4 className="text-xl font-bold text-[var(--text-page)] group-hover:text-[var(--accent)] transition-colors duration-300">Nombre del Proyecto 2</h4>
-                <p className="text-[var(--text-page)]/70 text-sm line-clamp-3 mt-3 leading-relaxed transition-colors duration-300">
-                  Breve descripción. Sustituye este texto explicando el propósito del sistema, el desafío principal y cómo tu arquitectura en el backend lo resolvió eficazmente.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-auto pt-2">
-                <span className="text-xs font-mono font-medium px-3 py-1.5 bg-[var(--accent-light)] text-[var(--accent)] rounded-lg transition-colors duration-300">Tecnología</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact/Footer */}
-        <footer className="mt-16 border-t border-[var(--border-line)] pt-8 md:pt-10 pb-8 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 opacity-0-init animate-fade-in-up delay-400 transition-colors duration-300">
-          <p className="text-[var(--text-page)]/60 text-sm font-medium transition-colors duration-300 text-center md:text-left">
-            © {new Date().getFullYear()} Alejandro Estrada. Todos los derechos reservados.
-          </p>
-          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6">
-            <a href="https://www.linkedin.com/in/daniel-alejandro-estrada-olalde-532a16233/" className="flex items-center gap-2 text-[var(--text-page)]/70 hover:text-[var(--accent)] transition-colors font-medium text-sm sm:text-base">
-              <svg className="w-5 h-5 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
-              LinkedIn
-            </a>
-            <a href="https://github.com/alnuxE" className="flex items-center gap-2 text-[var(--text-page)]/70 hover:text-[var(--accent)] transition-colors font-medium text-sm sm:text-base">
-              <svg className="w-5 h-5 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
-              alnuxE
-            </a>
-            <a href="mailto:danyolalde@gmail.com" className="flex items-center gap-2 text-[var(--text-page)]/70 hover:text-[var(--accent)] transition-colors font-medium text-sm sm:text-base">
-              <svg className="w-5 h-5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-              danyolalde@gmail.com
-            </a>
-          </div>
-        </footer>
-      </main>
+            </footer>
+          </main>
+        </div>
+      </div>
     </div>
   );
 }

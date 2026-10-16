@@ -1,0 +1,147 @@
+/* =============================================================================
+   motion.css — capa de movimiento del sitio
+   -----------------------------------------------------------------------------
+   Se importa desde app/globals.css justo después de `@import "tailwindcss";`.
+   Al quedar fuera de las capas de Tailwind, estas reglas ganan a las utilidades
+   sin necesidad de `!important`.
+
+   Reglas de la casa:
+   · Solo se animan `transform` y `opacity`. Nada que provoque reflow.
+   · El estado final ES el estado por defecto en CSS, y la animación va *desde*
+     un estado inicial. Al revés, quien pide movimiento reducido ve una página
+     en blanco.
+   · Todo el movimiento de la página cabe en la primera pantalla y dura menos de
+     900 ms. Ninguna sección anima al entrar en pantalla: la cascada de
+     `fade-in-up` sección a sección obliga a leer a la velocidad de la animación
+     en vez de a la del lector.
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------------
+   1. Curvas y tiempos
+   Las curvas del sitio, en un solo sitio: cambiar aquí cambia el carácter de
+   todo el movimiento. `ease` por defecto no aparece en ningún sitio.
+   -------------------------------------------------------------------------- */
+:root {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1); /* entradas: llega y se posa */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1); /* desplazamientos largos */
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1); /* rebote mínimo, solo micro */
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1); /* ida y vuelta */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1); /* cambios de estado neutros */
+  --ease-trazo: cubic-bezier(0.2, 0.7, 0.2, 1); /* el trazo de un tiralíneas */
+
+  --dur-tap: 140ms; /* respuesta al dedo */
+  --dur-ui: 220ms; /* hover, foco, cambios de estado */
+  --dur-enter: 620ms; /* entrada de contenido */
+}
+
+/* -----------------------------------------------------------------------------
+   2. El cuadro de rótulo se dibuja
+   ¿Qué es esto que estoy mirando? Un plano que acaba de trazarse. Una banda del
+   color del fondo se retira hacia la derecha y deja el cuadro a la vista: el
+   gesto es el de un tiralíneas, no el de un elemento que aparece.
+
+   Es transform puro sobre una capa aparte, así que compone en GPU y no toca el
+   contenido. En reposo la banda ya está retirada (`scaleX(0)`), que es lo que
+   hace que con movimiento reducido no haya nada que esperar.
+   -------------------------------------------------------------------------- */
+.anim-trazo {
+  position: relative;
+}
+.anim-trazo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  transform: scaleX(0);
+  transform-origin: right center;
+  pointer-events: none;
+  animation: trazo-retirar 420ms var(--ease-trazo) both;
+}
+@keyframes trazo-retirar {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   3. El nombre y la propuesta de valor
+   ¿Quién firma esto? Aparecen 180 ms después del trazo, sin desplazamiento
+   vertical: un nombre que sube desde abajo es el tic de plantilla que esta
+   página existe para evitar.
+   -------------------------------------------------------------------------- */
+.anim-entrada {
+  animation: entrada-aparecer 200ms var(--ease-out-expo) 180ms both;
+}
+.anim-entrada-2 {
+  animation: entrada-aparecer 200ms var(--ease-out-expo) 280ms both;
+}
+@keyframes entrada-aparecer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   4. Cursor de terminal
+   ¿Esto sigue escribiéndose? Un bloque que parpadea al final de un texto mono.
+   Es el único bucle infinito del sitio y está justificado: comunica estado vivo
+   sin reclamar atención. `steps(1)` para que corte en seco, como una terminal de
+   verdad; un desvanecido suave lo convertiría en un latido decorativo.
+   -------------------------------------------------------------------------- */
+.term-cursor::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 0.12em;
+  vertical-align: -0.15em;
+  background: currentColor;
+  animation: term-blink 1.05s steps(1, end) infinite;
+}
+
+@keyframes term-blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  56%,
+  100% {
+    opacity: 0.12;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   5. prefers-reduced-motion: reduce
+   El usuario ha pedido no ver movimiento. Todo se apaga y todo queda en su
+   estado final: nada oculto, nada a medio camino.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    animation-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* La banda del trazo no llega ni a verse; el cuadro sale ya dibujado. */
+  .anim-trazo::after {
+    animation: none;
+    transform: scaleX(0);
+  }
+
+  /* El cursor se queda encendido. */
+  .term-cursor::after {
+    animation: none;
+    opacity: 1;
+  }
+}
