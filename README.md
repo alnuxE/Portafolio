@@ -1,41 +1,46 @@
 # Portafolio — Daniel Alejandro Estrada Olalde (`alnuxE`)
 
-Portafolio personal y generador de currículum imprimible. Está construido como
-una **ficha técnica**, no como una galería: retícula milimetrada, cuadro de
-rótulo, tablas cotadas y una sola tinta de sello. La idea es que la forma de la
-página sostenga lo que la página afirma — que quien firma trabaja con precisión.
+Portafolio personal y generador de currículum imprimible. La portada está
+construida como un **keynote de lanzamientos**: un escenario neutro y, encima, un
+capítulo por producto bañado entero en su color de marca, con sus cifras a escala
+de escenario. La idea es que quien filtra candidatos entienda en segundos qué se
+ha construido y cuánto se ha probado, sin leer un párrafo.
 
 ## Qué contiene
 
-* **Portada (`/`).** Cuadro de rótulo con los datos duros, stack agrupado por
-  capas, cuatro proyectos con sus métricas reales, experiencia y formación.
+* **Portada (`/`).** Héroe con el nombre, el tiempo en producción calculado en
+  vivo y las 808 pruebas desglosadas por app en una barra proporcional que lleva a
+  cada capítulo. Después, un capítulo por app (SwitchIot, PromptEngine, Classly)
+  con sus decisiones de ingeniería, la trayectoria como un único hilo, el stack por
+  capas y el cierre con los tres formatos del CV.
 * **Currículum (`/cv`).** Tres presentaciones conmutables, las tres imprimibles
   en A4: **Clásico** (formato Harvard, serif, blanco y negro), **Destacado**
   (para empresa, con jerarquía visual y color contenido, legible fotocopiado) y
   **Soporte TI** (el mismo expediente reordenado para ofertas de operaciones y
   mesa de ayuda).
-* **Dos temas de primera clase.** Claro «papel de delineante» y oscuro
-  «instrumento». El oscuro no es el claro invertido: cambia el acento, porque un
-  guinda oscuro sobre fondo oscuro desaparece.
+* **Dos temas de primera clase** (claro, oscuro y sistema).
 
 ## Decisiones que conviene conocer antes de tocar nada
 
-* **Todo color vive en un token** de `app/globals.css`. Ningún componente
-  escribe un hexadecimal. `--brand-classly`, `--brand-prompt` y `--brand-switch`
-  son los hex exactos de cada producto y se usan **solo** en su logotipo; para
-  texto o trazos finos existe la variante `--brand-*-fg`, ajustada por tema.
-* **Los logotipos son SVG en línea** (`components/brand/`), no ficheros de
-  `public/`. El sitio se despliega bajo un `basePath` en GitHub Pages y las rutas
-  absolutas a `public/` se romperían ahí.
+* **La portada vive en `app/page.tsx` + `app/home.css`**, todo bajo `.escena` y
+  con tokens `--e-*`. `/cv` sigue usando `app/globals.css` y sus propias fuentes;
+  ninguna de las dos hojas le cambia una medida a la otra.
+* **Una sola familia en la portada: Archivo variable.** La jerarquía la dan los
+  ejes de anchura y peso (condensada negra para cifras, semiexpandida para
+  rótulos). Martian Mono, IBM Plex y EB Garamond solo los usa `/cv` y no se
+  precargan en la portada.
+* **El color de marca es el capítulo.** `--e-switch`, `--e-prompt` y
+  `--e-classly` bañan su sección entera; el texto secundario se mezcla del
+  blanco con el tono (≥ 4,5:1 calculado en los tres).
 * **El contenido vive en `content/site.ts`**, tipado y como fuente única. Las
-  cifras agregadas (808 pruebas, 218 ficheros) se **calculan** desde los
-  proyectos: escribirlas a mano las desincroniza a la primera corrección.
-* **Ninguna sección anima al entrar en pantalla.** Todo el movimiento cabe en la
-  primera pantalla y dura menos de 900 ms (`app/motion.css`). La cascada de
-  desvanecidos sección a sección obliga a leer a la velocidad de la animación.
-* **Con `prefers-reduced-motion` el estado final es el estado por defecto** y la
-  animación va *desde* un estado inicial. Al revés, quien reduce el movimiento se
-  queda mirando una página en blanco.
+  cifras agregadas (808 pruebas, 218 ficheros) se **calculan**. Cada app tiene
+  `decisiones` (solo hechos defendibles en entrevista) y un campo opcional
+  `enlaces` para tienda, demo o repo: si se llena, la portada pinta los botones.
+* **Movimiento: un solo momento.** El rodillo de dígitos rueda una vez (≤ 900 ms)
+  y el estado de reposo ya es el final, así que con `prefers-reduced-motion`, sin
+  JS o antes de entrar en pantalla la cifra se lee igual.
+* **Los logotipos son SVG en línea** (`components/brand/`), no ficheros de
+  `public/`, para que funcionen bajo el `basePath` de GitHub Pages.
 
 ## Stack
 
@@ -45,7 +50,7 @@ página sostenga lo que la página afirma — que quien firma trabaja con precis
 | Interfaz | React 19 · TypeScript estricto |
 | Estilos | Tailwind CSS v4 con tokens propios |
 | Temas | `next-themes` (claro · oscuro · sistema) |
-| Tipografía | Martian Mono (display) · IBM Plex Sans / Mono · EB Garamond (solo `/cv`) |
+| Tipografía | Archivo variable (portada) · Martian Mono · IBM Plex Sans / Mono · EB Garamond (`/cv`) |
 | Iconos | `lucide-react`, más trazados propios para GitHub y LinkedIn |
 | Despliegue | GitHub Actions → GitHub Pages (exportación estática) |
 

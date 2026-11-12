@@ -69,7 +69,6 @@
   --brand-classly-fg: #0a56b8;
   --brand-prompt-fg: #5b34e0;
   --brand-switch-fg: #0d6e6e;
-  --brand-nebula-fg: var(--fg);
 }
 
 /* ============================================================================
@@ -108,7 +107,6 @@
   --brand-classly-fg: #5fa0ff;
   --brand-prompt-fg: #a794ff;
   --brand-switch-fg: #35bdbd;
-  --brand-nebula-fg: var(--fg);
 }
 
 /* ============================================================================

@@ -6,7 +6,6 @@ import {
   profile,
   stackLayers,
   totals,
-  work,
 } from "../../content/site";
 import { githubTexto, linkedinTexto } from "./datos";
 
@@ -178,18 +177,6 @@ export function CvDestacado() {
                   <span>{app.note}</span>
                 </p>
               ))}
-
-            <div className="cd-obra item-experiencia">
-              <div className="cd-obra-linea">
-                <h3 className="cd-titulo">{work.name}</h3>
-                <span className="cd-periodo">{work.client}</span>
-              </div>
-              <p className="cd-sub">
-                {work.fields
-                  .map((campo) => `${campo.label}: ${campo.value.join(", ")}`)
-                  .join(" · ")}
-              </p>
-            </div>
           </section>
         </div>
       </div>

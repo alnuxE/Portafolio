@@ -64,7 +64,7 @@ export type StackLayer = {
   readonly viva?: boolean;
 };
 
-export type ProjectBrand = 'classly' | 'prompt' | 'switch' | 'nebula';
+export type ProjectBrand = 'classly' | 'prompt' | 'switch';
 
 /** Una app propia. Las cifras son enteros, no cadenas: la fila de resumen las
  *  suma, y una suma escrita a mano se desincroniza a la primera corrección. */
@@ -79,16 +79,12 @@ export type AppProject = {
   readonly platforms: readonly string[];
   /** Nota al pie: solo la lleva el proyecto cuyo argumento la merece. */
   readonly note?: string;
-};
-
-/** El trabajo profesional tiene otra forma de tarjeta, y esa diferencia de
- *  forma es la que comunica que es otra categoría. */
-export type WorkProject = {
-  readonly id: string;
-  readonly name: string;
-  readonly client: string;
-  readonly summary: string;
-  readonly fields: readonly { readonly label: string; readonly value: readonly string[] }[];
+  /** Decisiones de ingeniería que la portada enseña en el capítulo de la app.
+   *  Solo hechos verificables: si no se puede defender en entrevista, no entra. */
+  readonly decisiones: readonly string[];
+  /** Enlaces públicos (tienda, demo, sitio, repo). Opcional: el código es
+   *  privado, y la portada solo pinta botones para los que existan. */
+  readonly enlaces?: readonly { readonly label: string; readonly href: string }[];
 };
 
 /* -------------------------------------------------------------------------
@@ -146,6 +142,12 @@ export const apps: readonly AppProject[] = [
     version: '1.1.0',
     platforms: ['Android', 'Linux', 'Windows'],
     note: 'Una prueba comprueba en cada ejecución que ninguna capa importe hacia arriba.',
+    decisiones: [
+      'Descubre los equipos por difusión UDP y, si la red la bloquea, barre la subred.',
+      'Aprovisiona el ESP32 desde su propio punto de acceso, sin servidor de por medio.',
+      'Una credencial por dispositivo, guardada en el almacén seguro del sistema.',
+      'Registra los tiempos de extremo a extremo y el registro sobrevive al cierre de la app.',
+    ],
   },
   {
     id: 'promptengine',
@@ -157,6 +159,11 @@ export const apps: readonly AppProject[] = [
     files: 54,
     version: '1.4.0',
     platforms: ['Android', 'Web', 'Linux'],
+    decisiones: [
+      'Cada sección del prompt es una pieza independiente que se reordena sin romper las demás.',
+      'La vista previa se recalcula en vivo y exporta Markdown limpio.',
+      'Su sitio de presentación corre en un servidor propio, en contenedores, detrás de Nginx.',
+    ],
   },
   {
     id: 'classly',
@@ -168,6 +175,10 @@ export const apps: readonly AppProject[] = [
     files: 79,
     version: '1.0.0',
     platforms: ['Android'],
+    decisiones: [
+      'El dominio está modelado en tipos inmutables: un horario no se corrompe a medias.',
+      'Funciona sin conexión; la red es una mejora, no un requisito.',
+    ],
   },
 ];
 
@@ -177,20 +188,6 @@ export const totals = {
   tests: apps.reduce((suma, app) => suma + app.tests, 0),
   files: apps.reduce((suma, app) => suma + app.files, 0),
 } as const;
-
-export const work: WorkProject = {
-  id: 'nebula',
-  name: 'Gestión Nebula V2',
-  client: 'Producción audiovisual',
-  summary:
-    'Sistema de gestión de producción audiovisual —proyectos, escaletas, inventario, cotizaciones, facturación y pagos— migrado de una versión heredada en Python con SQLite, que guardaba todo el negocio en un único blob JSON y calculaba los totales en el navegador.',
-  fields: [
-    { label: 'Rol', value: ['Full-stack'] },
-    { label: 'Stack', value: ['Node.js · Express', 'React · Vite'] },
-    { label: 'Datos', value: ['MongoDB 7', '19 colecciones'] },
-    { label: 'Acceso', value: ['5 roles', 'reglas en servidor'] },
-  ],
-};
 
 export type Experience = {
   readonly company: string;
@@ -364,13 +361,6 @@ export const cvOperaciones = {
         'Alta, configuración y diagnóstico de equipos en red local: descubrimiento por difusión UDP con barrido de subred como respaldo, aprovisionamiento desde el punto de acceso del equipo, una credencial por dispositivo en el almacén seguro del sistema y registro de tiempos de extremo a extremo que sobrevive al cierre de la aplicación.',
     },
     {
-      id: 'nebula',
-      name: 'Gestión Nebula V2',
-      meta: 'Proyecto de implementación',
-      body:
-        'Migración de un sistema heredado a una arquitectura por capas orquestada con Docker, con matriz de permisos de cinco roles y alta de accesos por perfil. Incluyó el traspaso de los datos históricos y la puesta en marcha del entorno.',
-    },
-    {
       id: 'promptengine',
       name: 'PromptEngine',
       meta: 'Android · Web · Linux',
@@ -381,6 +371,35 @@ export const cvOperaciones = {
   /** Se dice de frente: la oferta pedía titulado y aún no lo está. Ocultarlo
    *  solo aplaza la conversación hasta la entrevista. */
   notaFormacion: 'Titulación en curso',
+} as const;
+
+/* -------------------------------------------------------------------------
+   Portada
+   -------------------------------------------------------------------------
+   Los textos propios de la portada. Reencuadran los mismos hechos del perfil
+   para quien filtra candidatos a ingeniero de software: primero la prueba, luego
+   el adjetivo, y el adjetivo casi nunca.
+   ------------------------------------------------------------------------- */
+
+export const portada = {
+  posicionamiento: 'Ingeniero de software',
+  entradilla:
+    'Escribo backend en producción para sistemas que usan Walmart, Waldos y P&G, y publico mis propias aplicaciones con la arquitectura y las pruebas que exige un equipo grande.',
+  /** Mes en que empezó el puesto actual: el contador de la portada lo usa para
+   *  calcular el tiempo en producción en el navegador del visitante. */
+  enProduccionDesde: { anio: 2024, mes: 4 },
+  lanzamientos:
+    'Diseñadas, probadas y publicadas por mí de principio a fin. El código es privado; lo que se puede auditar son las cifras y las decisiones de ingeniería.',
+  /** El hilo de la trayectoria, en orden. `desde` da el año de la estación;
+   *  lo que se lee es `periodo`, copiado de la fuente. `hasta` nulo = en
+   *  curso: su riel corre junto al hilo hasta «hoy». */
+  trayectoria: [
+    { id: 'bachilleres', titulo: 'Técnico en Informática', lugar: 'Colegio de Bachilleres nº 6', periodo: 'Ago 2016 — Jul 2019', desde: 2016.6, hasta: 2019.55 },
+    { id: 'oracle', titulo: 'Programador Junior Java', lugar: 'Oracle Next Education', periodo: '2022 — Jun 2023', desde: 2022, hasta: 2023.45 },
+    { id: 'ipn', titulo: 'Ingeniería en Informática', lugar: 'IPN · 9.º semestre', periodo: '2022 — 2026', desde: 2022, hasta: null },
+    { id: 'fay', titulo: 'Desarrollador Backend', lugar: 'Fay Publicidad · Metrix', periodo: 'Abr 2024 — Actual', desde: 2024.25, hasta: null },
+  ],
+  cierre: '¿Tu equipo necesita a alguien que lleve software a producción y lo sostenga ahí?',
 } as const;
 
 /* -------------------------------------------------------------------------

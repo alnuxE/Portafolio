@@ -6,7 +6,6 @@ import {
   profile,
   stackLayers,
   totals,
-  work,
 } from "../../content/site";
 import { githubTexto, linkedinTexto } from "./datos";
 
@@ -96,15 +95,6 @@ export function CvClasico() {
               {app.note ? ` ${app.note}` : ""}
             </li>
           ))}
-          <li className="fila-proyecto">
-            <span className="cl-rotulo">{work.name}</span> — {work.client}.{" "}
-            {/* Solo el dato de cabecera de cada campo: el desglose completo
-                vive en la portada. Un CV de una página enseña el titular. */}
-            {work.fields
-              .map((campo) => `${campo.label}: ${campo.value[0]}`)
-              .join(". ")}
-            .
-          </li>
         </ul>
         <p className="cl-total">
           {totals.apps} aplicaciones propias publicadas, {totals.tests} pruebas

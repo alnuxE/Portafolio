@@ -1,10 +1,23 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Sans, Martian_Mono } from "next/font/google";
+import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans, Martian_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "../components/theme-provider";
 import { profile } from "../content/site";
 
-/* La voz de display es una mono: el nombre en cabecera está compuesto con la
+/* La voz de la portada: una sola familia variable que va de condensada negra
+   (cifras de escenario) a semiexpandida (rótulos). Un keynote no mezcla cinco
+   letras; cambia de anchura y de peso. */
+const archivo = Archivo({
+  subsets: ["latin"],
+  axes: ["wdth"],
+  variable: "--font-archivo",
+  display: "swap",
+});
+
+/* Las tres siguientes solo las usa /cv. Sin precarga: la portada no las pinta y
+   no tiene por qué descargarlas en la primera visita.
+
+   La voz de display es una mono: el nombre en cabecera está compuesto con la
    misma clase de letra con la que él escribe. El eje `wdth` hay que pedirlo
    explícitamente — next/font solo incluye `wght` por defecto. */
 const martianMono = Martian_Mono({
@@ -12,6 +25,7 @@ const martianMono = Martian_Mono({
   axes: ["wdth"],
   variable: "--font-martian",
   display: "swap",
+  preload: false,
 });
 
 const plexSans = IBM_Plex_Sans({
@@ -19,6 +33,7 @@ const plexSans = IBM_Plex_Sans({
   weight: ["400", "500", "600"],
   variable: "--font-plex-sans",
   display: "swap",
+  preload: false,
 });
 
 /* IBM Plex Mono no tiene versión variable: hay que enumerar los pesos. */
@@ -27,6 +42,7 @@ const plexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600"],
   variable: "--font-plex-mono",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -35,7 +51,7 @@ export const metadata: Metadata = {
     template: `%s · ${profile.shortName}`,
   },
   description:
-    "Desarrollador backend en producción para Walmart, Waldos y P&G. Tres aplicaciones propias en Flutter con 808 pruebas automatizadas. Ingeniería en Informática, IPN.",
+    "Ingeniero de software: backend en producción para Walmart, Waldos y P&G y tres aplicaciones propias en Flutter con 808 pruebas automatizadas. Ingeniería en Informática, IPN.",
   authors: [{ name: profile.name, url: profile.githubUrl }],
   keywords: [
     "desarrollador backend",
@@ -61,7 +77,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${martianMono.variable} ${plexSans.variable} ${plexMono.variable} h-full`}
+      className={`${archivo.variable} ${martianMono.variable} ${plexSans.variable} ${plexMono.variable} h-full`}
       suppressHydrationWarning
     >
       <body className="min-h-full">

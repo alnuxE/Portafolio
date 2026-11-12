@@ -1,498 +1,539 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
-import { Mail, MapPin } from "lucide-react";
+import type { CSSProperties, ReactNode } from "react";
+import {
+  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  CloudOff,
+  Cpu,
+  Droplets,
+  Lock,
+  MapPin,
+  Smartphone,
+} from "lucide-react";
+
+import "./home.css";
 
 import { GithubIcon, LinkedinIcon } from "../components/icons";
-
-import { ThemeSwitcher } from "../components/theme-switcher";
-import { RailNav } from "../components/rail-nav";
-import { ScrollProgress } from "../components/scroll-progress";
-import { Monogram } from "../components/brand/monogram";
 import {
   ClasslyMark,
   PromptEngineMark,
   SwitchIotMark,
 } from "../components/brand/project-logos";
+import { Barra } from "../components/home/barra";
+import { Rodillo } from "../components/home/rodillo";
+import { TiempoEnProduccion } from "../components/home/tiempo-en-produccion";
 import {
   apps,
   education,
   experience,
+  languages,
+  portada,
   profile,
-  sections,
   stackLayers,
   totals,
-  work,
+  type AppProject,
   type ProjectBrand,
 } from "../content/site";
 
-/* La marca y el canto de cada producto, resueltos en un solo sitio. El canto
-   usa la variante `-fg` del color: el hex exacto de marca no es legible como
-   trazo fino en los dos temas, y un canto es un trazo fino. */
+/* Cada producto tiene su tinta. El capítulo entero se baña en ella; en el héroe
+   la misma tinta pinta su tramo de la alineación, de modo que el color ya
+   significa «esta app» antes de llegar a su capítulo. */
 const MARCAS: Record<
   ProjectBrand,
-  { Mark: (p: { className?: string }) => ReactNode; canto: string }
+  { Mark: (p: { className?: string }) => ReactNode; tinta: string }
 > = {
-  classly: { Mark: ClasslyMark, canto: "var(--brand-classly-fg)" },
-  prompt: { Mark: PromptEngineMark, canto: "var(--brand-prompt-fg)" },
-  switch: { Mark: SwitchIotMark, canto: "var(--brand-switch-fg)" },
-  nebula: { Mark: () => null, canto: "var(--fg)" },
+  switch: { Mark: SwitchIotMark, tinta: "var(--e-switch)" },
+  prompt: { Mark: PromptEngineMark, tinta: "var(--e-prompt)" },
+  classly: { Mark: ClasslyMark, tinta: "var(--e-classly)" },
 };
 
-/** Una celda del cuadro de rótulo: rótulo arriba, dato, y matiz debajo. */
-function CeldaRotulo({
-  rotulo,
-  valor,
-  nota,
-}: {
-  rotulo: string;
-  valor: string;
-  nota: string;
-}) {
+const var_ = (vars: Record<string, string | number>) => vars as CSSProperties;
+
+/* -------------------------------------------------------------------------
+   Figuras de mecanismo: dibujan lo que la app hace, con los hechos del
+   contenido. No son capturas: el código es privado y no se fingen pantallas.
+   ------------------------------------------------------------------------- */
+
+function FiguraSwitch() {
   return (
-    <div className="bg-surface p-3">
-      <p className="t-label">{rotulo}</p>
-      <p
-        className="mt-1.5 font-[family-name:var(--font-display)] text-fg tabular-nums"
-        style={{ fontVariationSettings: '"wdth" 87.5', fontWeight: 500 }}
-      >
-        {valor}
+    <figure className="e-figura">
+      <div className="e-red" role="img" aria-label="La app se conecta al ESP32 por la red local y el ESP32 controla la bomba, sin pasar por la nube.">
+        <div className="e-nodo">
+          <span className="e-nodo-caja"><Smartphone size={22} aria-hidden="true" /></span>
+          App
+        </div>
+        <div className="e-enlace-red"><span>red local</span></div>
+        <div className="e-nodo">
+          <span className="e-nodo-caja"><Cpu size={22} aria-hidden="true" /></span>
+          ESP32
+        </div>
+        <div className="e-enlace-red"><span>relé</span></div>
+        <div className="e-nodo">
+          <span className="e-nodo-caja"><Droplets size={22} aria-hidden="true" /></span>
+          Bomba
+        </div>
+      </div>
+      <p className="e-sin-nube">
+        <CloudOff size={16} aria-hidden="true" />
+        Sin nube y sin cuenta: si se cae internet, la bomba sigue respondiendo.
       </p>
-      <p className="t-mono mt-0.5 text-fg-muted">{nota}</p>
-    </div>
+    </figure>
   );
 }
 
-/** Una lectura de instrumento: la cifra sola, con su unidad debajo. */
-function Lectura({ valor, unidad }: { valor: string; unidad: string }) {
+function FiguraPrompt() {
+  const piezas = ["Rol", "Objetivo", "Contexto", "Formato"];
   return (
-    <div className="pozo-celda">
-      <p className="t-metric text-fg">{valor}</p>
-      <p className="t-label mt-1.5">{unidad}</p>
-    </div>
+    <figure className="e-figura">
+      <div className="e-compositor">
+        <ul className="e-piezas" aria-label="Secciones del prompt">
+          {piezas.map((p, i) => (
+            <li key={p} className="e-pieza" style={var_({ "--i": i })}>
+              <i aria-hidden="true" />
+              {p}
+            </li>
+          ))}
+        </ul>
+        <ArrowRight className="hidden sm:block" size={22} aria-hidden="true" />
+        <pre className="e-salida" aria-label="Ejemplo de salida en Markdown">
+          <b>## Rol</b>{"\n"}Revisor de código senior{"\n"}<b>## Objetivo</b>{"\n"}Detectar fugas de memoria{"\n"}<b>## Formato</b>{"\n"}Lista priorizada
+        </pre>
+      </div>
+      <figcaption>Ejemplo ilustrativo de cómo las secciones se componen en Markdown.</figcaption>
+    </figure>
   );
 }
+
+const FIGURAS: Partial<Record<ProjectBrand, () => ReactNode>> = {
+  switch: FiguraSwitch,
+  prompt: FiguraPrompt,
+};
+
+/* -------------------------------------------------------------------------
+   Capítulo de lanzamiento
+   ------------------------------------------------------------------------- */
+
+function Capitulo({ app, espejo }: { app: AppProject; espejo: boolean }) {
+  const marca = MARCAS[app.brand as ProjectBrand];
+  const Figura = FIGURAS[app.brand];
+  return (
+    <section
+      id={app.id}
+      aria-labelledby={`titulo-${app.id}`}
+      className={`e-capitulo e-capitulo--${app.brand} ${espejo ? "e-capitulo--espejo" : ""}`}
+    >
+      <div className="e-marco e-capitulo-rejilla">
+        <div>
+          <marca.Mark className="e-capitulo-marca" />
+          <h3 id={`titulo-${app.id}`} className="e-titulo">
+            {app.name}
+          </h3>
+          <p className="e-entradilla mt-6" style={{ color: "var(--tinta-2)" }}>
+            {app.tagline}
+          </p>
+          <p className="e-ficha-linea">
+            <span>v{app.version}</span>
+            <span>{app.platforms.join(" · ")}</span>
+          </p>
+
+          <ul className="e-decisiones" aria-label={`Decisiones de ingeniería en ${app.name}`}>
+            {[...app.decisiones, ...(app.note ? [app.note] : [])].map((d) => (
+              <li key={d}>
+                <Check size={18} aria-hidden="true" />
+                <span>{d}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <div className="e-tablero">
+            <div className="e-tablero-principal">
+              <div>
+                <Rodillo valor={app.tests} />
+                <p className="e-rotulo">pruebas automatizadas</p>
+              </div>
+            </div>
+            <div className="e-tablero-celda">
+              <Rodillo valor={app.files} />
+              <p className="e-rotulo">ficheros Dart</p>
+            </div>
+            <div className="e-tablero-celda">
+              <Rodillo valor={app.platforms.length} />
+              <p className="e-rotulo">
+                {app.platforms.length === 1 ? "plataforma" : "plataformas"}
+              </p>
+            </div>
+            <div className="e-tablero-celda">
+              <span className="e-cifra" style={{ fontSize: "clamp(2.5rem, 1.8rem + 2.4vw, 3.75rem)" }}>
+                {app.version.split(".")[0]}.{app.version.split(".")[1]}
+              </span>
+              <p className="e-rotulo">versión</p>
+            </div>
+          </div>
+
+          {Figura ? <Figura /> : null}
+
+          {app.enlaces && app.enlaces.length > 0 ? (
+            <ul className="mt-6 flex flex-wrap gap-2">
+              {app.enlaces.map((e) => (
+                <li key={e.href}>
+                  <a href={e.href} className="e-boton e-boton--hueco e-boton--chico">
+                    {e.label}
+                    <ArrowUpRight size={16} aria-hidden="true" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          <p className="e-privado">
+            <Lock size={14} aria-hidden="true" />
+            Código privado · cifras tomadas del repositorio
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------
+   Trayectoria: un solo hilo
+   -------------------------------------------------------------------------
+   Cada etapa es una estación sobre el mismo trazo. Lo que sigue abierto (la
+   carrera, el puesto) corre como un riel pegado al hilo desde su estación
+   hasta «hoy», así que se ve de un vistazo qué se solapa con qué.
+   ------------------------------------------------------------------------- */
+
+function Hilo() {
+  const etapas = portada.trayectoria;
+  const ultima = etapas.length; // la estación «Hoy» va detrás de todas
+  const abiertas = etapas
+    .map((t, idx) => ({ ...t, idx, vivo: t.id === "fay" }))
+    .filter((t) => t.hasta === null);
+  const rieles = (k: number) =>
+    abiertas
+      .filter((a) => a.idx <= k)
+      .map((a, n) => (
+        <span
+          key={a.id}
+          aria-hidden="true"
+          className={`e-riel ${a.vivo ? "e-riel--vivo" : ""} ${
+            a.idx === k ? "e-riel--inicio" : k === ultima ? "e-riel--fin" : ""
+          }`}
+          style={var_({ "--off": `${14 + n * 8}px` })}
+        />
+      ));
+
+  return (
+    <ol className="e-hilo" aria-label="Trayectoria en orden cronológico">
+      {etapas.map((t, k) => {
+        const vivo = t.id === "fay";
+        const enCurso = t.hasta === null;
+        return (
+          <li
+            key={t.id}
+            className={`e-estacion ${vivo ? "e-estacion--vivo" : enCurso ? "e-estacion--curso" : ""}`}
+          >
+            {rieles(k)}
+            <span className="e-estacion-anio">{Math.floor(t.desde)}</span>
+            <span className="e-estacion-nodo" aria-hidden="true" />
+            <div className="e-estacion-cuerpo">
+              <strong>{t.titulo}</strong>
+              <span>{t.lugar}</span>
+              <span className="e-estacion-periodo">
+                {t.periodo}
+                {vivo ? " · en curso" : enCurso ? " · en curso" : ""}
+              </span>
+            </div>
+          </li>
+        );
+      })}
+      <li className="e-estacion e-estacion--curso">
+        {rieles(ultima)}
+        <span className="e-estacion-anio">Hoy</span>
+        <span className="e-estacion-nodo" aria-hidden="true" />
+        <div className="e-estacion-cuerpo">
+          <strong>{totals.apps} apps propias publicadas</strong>
+          <span>En paralelo al trabajo y a la carrera, de la arquitectura a la publicación.</span>
+          <ul className="e-estacion-apps">
+            {apps.map((app) => {
+              const { Mark, tinta } = MARCAS[app.brand as ProjectBrand];
+              return (
+                <li key={app.id}>
+                  <a href={`#${app.id}`} style={var_({ "--tono": tinta })}>
+                    <Mark />
+                    {app.name}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </li>
+    </ol>
+  );
+}
+
+/* -------------------------------------------------------------------------
+   Página
+   ------------------------------------------------------------------------- */
+
 
 export default function Home() {
   const [puesto] = experience;
 
   return (
-    <div className="relative min-h-screen">
-      {/* El papel milimetrado no es textura: es el soporte del que el cuadro de
-          rótulo forma parte. Solo aparece donde la página se presenta como
-          documento — al abrir y al cerrar. */}
-      <div
-        aria-hidden="true"
-        className="substrato pointer-events-none absolute inset-x-0 top-0 -z-10 h-[46rem]"
-      />
+    <div className="escena">
+      <Barra alias={profile.alias} />
 
-      <ScrollProgress />
-
-      {/* En móvil el conmutador sale del cuadro de rótulo: ahí no compite con
-          nada, y a 360 px de ancho el cuadro no tiene sitio para él. */}
-      <div className="fixed right-3 top-3 z-40 h-11 w-11 border border-border bg-surface sm:hidden">
-        <ThemeSwitcher compacto />
-      </div>
-
-      <div className="envoltura">
-        <div className="lg:grid lg:grid-cols-[var(--margin-col)_minmax(0,1fr)] lg:gap-x-10">
-          <aside className="hidden lg:block">
-            <RailNav />
-          </aside>
-
-          <main className="min-w-0">
-            {/* ---------------------------------------------------------- HÉROE */}
-            <section
-              id="inicio"
-              aria-labelledby="titulo-inicio"
-              className="pb-14 pt-14 lg:pb-24 lg:pt-20"
-            >
-              <div className="anim-entrada mb-10 flex items-center gap-3 text-fg">
-                <Monogram className="h-6 w-auto" />
-                <span className="t-label">portafolio · {profile.alias}</span>
-              </div>
-
-              <h1 id="titulo-inicio" className="t-display anim-entrada text-fg">
-                <span className="lg:block">Daniel Alejandro</span>{" "}
-                <span className="lg:block">Estrada Olalde</span>
-              </h1>
-
-              <p className="t-lead anim-entrada-2 mt-6 text-fg-muted">
-                {profile.headline}
-              </p>
-
-              <div className="anim-trazo rotulo mt-10 max-w-[46rem]">
-                <div className="rotulo-franja">
-                  <span className="t-label">ficha</span>
-                  <div className="-mr-3 hidden self-stretch border-l border-border-soft sm:block">
-                    <ThemeSwitcher className="!h-full w-auto px-3" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-px bg-border-soft sm:grid-cols-4">
-                  <CeldaRotulo
-                    rotulo="Rol"
-                    valor="Backend"
-                    nota="desarrollador"
-                  />
-                  <CeldaRotulo
-                    rotulo="Desde"
-                    valor="abr 2024"
-                    nota="Fay · Metrix"
-                  />
-                  <CeldaRotulo
-                    rotulo="Apps"
-                    valor={String(totals.apps)}
-                    nota="publicadas"
-                  />
-                  <CeldaRotulo
-                    rotulo="Pruebas"
-                    valor={String(totals.tests)}
-                    nota="automatizadas"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 gap-px border-t border-border-soft bg-border-soft sm:grid-cols-[1fr_1fr_2fr]">
-                  <CeldaRotulo rotulo="Centro" valor="IPN" nota="CDMX" />
-                  <CeldaRotulo
-                    rotulo="Avance"
-                    valor="9.º semestre"
-                    nota="último"
-                  />
-                  <CeldaRotulo
-                    rotulo="Carrera"
-                    valor="Ing. Informática"
-                    nota="titulación en curso"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
-                <Link href="/cv" className="btn w-full sm:w-auto">
-                  Ver currículum
-                </Link>
-                <ul className="t-mono flex flex-wrap items-center gap-x-6 gap-y-3">
-                  <li>
-                    <a className="enlace" href={profile.githubUrl}>
-                      GitHub
-                    </a>
-                  </li>
-                  <li>
-                    <a className="enlace" href={profile.linkedinUrl}>
-                      LinkedIn
-                    </a>
-                  </li>
-                  <li>
-                    <a className="enlace" href={`mailto:${profile.email}`}>
-                      {profile.email}
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </section>
-
-            {/* ---------------------------------------------------------- STACK */}
-            <section
-              id="stack"
-              aria-labelledby="titulo-stack"
-              className="seccion"
-            >
-              <h2 id="titulo-stack" className="t-h2 text-fg">
-                Stack
-              </h2>
-              <p className="t-body mt-4 text-fg-muted">
-                Agrupado por capas, que es como lo pienso cuando construyo.
-              </p>
-
-              <div className="-mx-3 mt-8">
-                {stackLayers.map((capa) => (
-                  <div
-                    key={capa.id}
-                    className={`grid gap-x-8 gap-y-2 border-t border-border-soft px-3 py-4 lg:grid-cols-[9rem_minmax(0,1fr)] ${
-                      capa.viva ? "bg-accent-soft" : ""
-                    }`}
-                  >
-                    <p className={`t-label ${capa.viva ? "marca-viva" : ""}`}>
-                      {capa.label}
-                    </p>
-                    <ul className="t-mono flex flex-wrap gap-x-8 gap-y-2 text-fg">
-                      {capa.items.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* ------------------------------------------------------ PROYECTOS */}
-            <section
-              id="proyectos"
-              aria-labelledby="titulo-proyectos"
-              className="seccion"
-            >
-              <h2 id="titulo-proyectos" className="t-h2 text-fg">
-                Proyectos
-              </h2>
-              <p className="t-body mt-4 text-fg-muted">
-                Tres aplicaciones propias, diseñadas y publicadas de principio a
-                fin, y un sistema en producción para cliente. El código es
-                privado, así que aquí van las cifras.
-              </p>
-
-              {/* El total de la tabla, antes de las filas. */}
-              <div className="pozo mt-8 border-y border-border">
-                <Lectura valor={String(totals.apps)} unidad="apps propias" />
-                <Lectura valor={String(totals.tests)} unidad="pruebas" />
-                <Lectura
-                  valor={String(totals.files)}
-                  unidad="ficheros Dart"
+      <main>
+        {/* -------------------------------------------------------- HÉROE */}
+        <section id="inicio" aria-labelledby="titulo-inicio" className="e-marco e-heroe">
+          <div>
+            <p className="e-estado e-entra" style={var_({ "--i": 0 })}>
+              <span className="e-estado-vivo">
+                <span className="e-pulso" aria-hidden="true" />
+                <TiempoEnProduccion
+                  anio={portada.enProduccionDesde.anio}
+                  mes={portada.enProduccionDesde.mes}
                 />
-              </div>
+              </span>
+              <span>{profile.location}</span>
+            </p>
 
-              <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {apps.map((app) => {
-                  const { Mark, canto } = MARCAS[app.brand];
-                  return (
-                    <article
-                      key={app.id}
-                      className="tarjeta group"
-                      style={{ ["--canto" as string]: canto }}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <Mark className="h-10 w-10 shrink-0" />
-                        <span className="t-mono text-fg-faint">
-                          v{app.version}
-                        </span>
-                      </div>
+            <h1 id="titulo-inicio" className="e-nombre mt-8 e-entra" style={var_({ "--i": 1 })}>
+              Daniel Alejandro
+              <br />
+              Estrada Olalde
+            </h1>
+            <p className="e-subtitulo mt-5 e-entra" style={var_({ "--i": 2, color: "var(--e-muted)" })}>
+              {portada.posicionamiento}
+            </p>
 
-                      <h3 className="t-h3 mt-4 text-fg">{app.name}</h3>
-                      {/* Alto mínimo de cuatro líneas: sin él cada descripción
-                          empuja su pozo a una altura distinta y las cifras dejan
-                          de compararse en vertical, que es toda la razón de la
-                          pieza. En una sola columna no hace falta. */}
-                      <p className="mb-6 mt-2 text-[length:var(--fs-small)] leading-relaxed text-fg-muted sm:min-h-[6rem]">
-                        {app.tagline}
-                      </p>
+            <p className="e-entradilla mt-6 e-entra" style={var_({ "--i": 3 })}>
+              {portada.entradilla}
+            </p>
 
-                      {/* `mt-auto` empuja el pozo al pie de la tarjeta: las tres
-                          comparten rejilla, así que 150 / 320 / 338 se comparan en
-                          vertical de un vistazo. Ésa es toda la razón de la pieza. */}
-                      <div className="pozo -mx-5 lg:-mx-6">
-                        <Lectura valor={String(app.tests)} unidad="pruebas" />
-                        <Lectura valor={String(app.files)} unidad="ficheros" />
-                        <Lectura
-                          valor={String(app.platforms.length)}
-                          unidad="plataformas"
-                        />
-                      </div>
+            <div className="mt-9 flex flex-wrap items-center gap-3 e-entra" style={var_({ "--i": 4 })}>
+              <Link href="/cv" className="e-boton">
+                Ver currículum
+                <ArrowRight size={18} aria-hidden="true" />
+              </Link>
+              <a href={`mailto:${profile.email}`} className="e-boton e-boton--hueco">
+                Escríbeme
+              </a>
+              <a href={profile.githubUrl} className="e-icono-boton" aria-label="GitHub">
+                <GithubIcon className="h-[18px] w-[18px]" />
+              </a>
+              <a href={profile.linkedinUrl} className="e-icono-boton" aria-label="LinkedIn">
+                <LinkedinIcon className="h-[18px] w-[18px]" />
+              </a>
+            </div>
+          </div>
 
-                      <p className="t-mono mt-4 flex flex-wrap justify-between gap-x-4 gap-y-1 text-fg-faint">
-                        <span className="text-fg-muted">
-                          {app.platforms.join(" · ")}
-                        </span>
-                        <span>código privado</span>
-                      </p>
+          <div className="e-marcador e-entra" style={var_({ "--i": 2 })}>
+            <div className="e-marcador-cifra">
+              <Rodillo valor={totals.tests} inmediato />
+              <p className="e-marcador-unidad">pruebas automatizadas en verde</p>
+            </div>
 
-                      {app.note ? (
-                        <p className="marca-viva mt-4 text-[length:var(--fs-small)] leading-snug text-fg-muted">
-                          {app.note}
-                        </p>
-                      ) : null}
-                    </article>
-                  );
-                })}
-              </div>
-
-              <div className="plano mt-10">
-                <p className="margen lg:pt-1">trabajo profesional</p>
-                <article
-                  className="tarjeta"
-                  style={{ ["--canto" as string]: MARCAS.nebula.canto }}
+            <nav className="e-alineacion" aria-label="Pruebas por aplicación">
+              {apps.map((app, i) => (
+                <a
+                  key={app.id}
+                  href={`#${app.id}`}
+                  className="e-tramo"
+                  style={var_({ "--peso": app.tests, "--ink": MARCAS[app.brand as ProjectBrand].tinta, "--i": i })}
                 >
-                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                    <h3 className="t-h3 text-fg">{work.name}</h3>
-                    <span className="t-mono text-fg-faint">{work.client}</span>
-                  </div>
-                  <p className="t-body mt-3 text-[length:var(--fs-small)] leading-relaxed text-fg-muted">
-                    {work.summary}
-                  </p>
-                  <div className="pozo -mx-5 mt-5 grid-cols-2 grid-flow-row sm:grid-flow-col lg:-mx-6">
-                    {work.fields.map((campo) => (
-                      <div key={campo.label} className="pozo-celda !text-left">
-                        <p className="t-label">{campo.label}</p>
-                        {campo.value.map((linea) => (
-                          <p key={linea} className="t-mono mt-1 text-fg">
-                            {linea}
-                          </p>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                </article>
-              </div>
-            </section>
+                  <span className="e-tramo-barra" aria-hidden="true" />
+                  <span className="e-tramo-dato">
+                    <strong>{app.tests}</strong>
+                    <span>{app.name}</span>
+                  </span>
+                </a>
+              ))}
+            </nav>
 
-            {/* ----------------------------------------------------- EXPERIENCIA */}
-            <section
-              id="experiencia"
-              aria-labelledby="titulo-experiencia"
-              className="seccion"
-            >
-              <h2 id="titulo-experiencia" className="t-h2 text-fg">
-                Experiencia
+            <p className="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-[0.9375rem]" style={{ color: "var(--e-muted)" }}>
+              <span>{totals.apps} apps propias</span>
+              <span>{totals.files} ficheros Dart</span>
+              <span>{puesto.clients.join(" · ")} en el trabajo</span>
+            </p>
+          </div>
+        </section>
+
+        {/* ---------------------------------------------- LANZAMIENTOS */}
+        <section id="lanzamientos" aria-labelledby="titulo-lanzamientos">
+          <div className="e-marco e-seccion !pb-16" style={{ borderTop: "1px solid var(--e-line)" }}>
+            <div className="e-cabeza !mb-0">
+              <h2 id="titulo-lanzamientos" className="e-titulo">
+                Tres apps propias, de la arquitectura a la publicación
               </h2>
+              <p className="e-texto">
+                {portada.lanzamientos}
+              </p>
+            </div>
+          </div>
 
-              <div className="plano mt-8">
-                <p className="margen lg:pt-1.5">{puesto.periodShort}</p>
-                <div>
-                  <h3 className="t-h3 text-fg">{puesto.role}</h3>
-                  <p className="t-mono mt-1 text-fg-muted">{puesto.company}</p>
+          {apps.map((app, i) => (
+            <Capitulo key={app.id} app={app} espejo={i % 2 === 1} />
+          ))}
 
-                  <ul className="mt-6 flex flex-col gap-2.5">
-                    {puesto.highlights.map((linea) => (
-                      <li key={linea} className="logro text-fg-muted">
-                        {linea}
-                      </li>
-                    ))}
-                  </ul>
+        </section>
 
-                  <div className="mt-6 border border-border-soft bg-surface-2 p-4">
-                    <p className="t-label">Clientes</p>
-                    <ul className="mt-2 flex flex-wrap gap-x-8 gap-y-1 text-fg">
-                      {puesto.clients.map((cliente) => (
-                        <li key={cliente}>{cliente}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </section>
+        {/* ------------------------------------------------ TRAYECTORIA */}
+        <section id="trayectoria" aria-labelledby="titulo-trayectoria" className="e-marco e-seccion">
+          <div className="e-cabeza">
+            <h2 id="titulo-trayectoria" className="e-titulo">
+              Trayectoria
+            </h2>
+            <p className="e-texto">
+              Diez años en un solo hilo: de técnico en programación a backend en
+              producción, estudiando ingeniería al mismo tiempo.
+            </p>
+          </div>
 
-            {/* ------------------------------------------------------- FORMACIÓN */}
-            <section
-              id="formacion"
-              aria-labelledby="titulo-formacion"
-              className="seccion"
-            >
-              <h2 id="titulo-formacion" className="t-h2 text-fg">
-                Formación
-              </h2>
+          <Hilo />
 
-              <div className="mt-8">
-                {education.map((estudio, i) => (
-                  <div
-                    key={estudio.title}
-                    className={`plano gap-y-1 py-5 ${
-                      i > 0 ? "border-t border-border-soft" : ""
-                    }`}
-                  >
-                    <p className="margen lg:pt-1.5">{estudio.period}</p>
-                    <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-                      <div>
-                        <h3
-                          className={`t-h3 text-fg ${
-                            estudio.current ? "marca-viva" : ""
-                          }`}
-                        >
-                          {estudio.title}
-                        </h3>
-                        <p className="t-mono mt-1 text-fg-muted">
-                          {estudio.school}
-                        </p>
-                      </div>
-                      {estudio.detail ? (
-                        <p className="t-mono text-fg-faint">{estudio.detail}</p>
-                      ) : null}
-                    </div>
-                  </div>
+          <div className="e-puesto">
+            <div>
+              <h3 className="e-subtitulo">{puesto.role}</h3>
+              <p className="mt-2" style={{ color: "var(--e-muted)" }}>
+                {puesto.company} · {puesto.period}
+              </p>
+              <p className="e-rotulo mt-8">Sistemas que usan</p>
+              <ul className="e-clientes">
+                {puesto.clients.map((c) => (
+                  <li key={c}>{c}</li>
                 ))}
-              </div>
-            </section>
+              </ul>
+            </div>
+            <div>
+              <ul className="e-logros">
+                {puesto.bullets.map((b) => (
+                  <li key={b}>{b}</li>
+                ))}
+              </ul>
+              <ul className="e-chips" aria-label="Tecnologías del puesto">
+                {puesto.stack.map((s) => (
+                  <li key={s}>{s}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
 
-            {/* -------------------------------------------------------- CONTACTO */}
-            <footer
-              id="contacto"
-              aria-labelledby="titulo-contacto"
-              className="substrato substrato-invertido seccion pb-16 lg:pb-20"
-            >
-              <h2 id="titulo-contacto" className="t-h2 text-fg">
-                ¿Hablamos?
-              </h2>
+        {/* ------------------------------------------------------ STACK */}
+        <section id="stack" aria-labelledby="titulo-stack" className="e-marco e-seccion">
+          <div className="e-cabeza">
+            <h2 id="titulo-stack" className="e-titulo">
+              Stack, por capas
+            </h2>
+            <p className="e-texto">
+              Ordenado como se dibuja una arquitectura: de lo que se escribe a lo
+              que lo sostiene, y encima la práctica que decide cómo se usa todo lo
+              demás.
+            </p>
+          </div>
 
-              <div className="rotulo mt-8">
-                <div className="grid grid-cols-1 gap-px bg-border-soft sm:grid-cols-2 lg:grid-cols-4">
-                  <a
-                    href={`mailto:${profile.email}`}
-                    className="flex min-h-14 flex-col justify-center bg-surface p-3 hover:bg-surface-2 [&:hover_span]:decoration-accent"
-                    style={{ ["--focus-bg" as string]: "var(--surface)" }}
-                  >
-                    <span className="t-label flex items-center gap-1.5">
-                      <Mail size={14} aria-hidden="true" /> Correo
-                    </span>
-                    <span className="t-mono mt-1 break-all text-fg underline decoration-border underline-offset-[3px]">
-                      {profile.email}
-                    </span>
-                  </a>
-                  <a
-                    href={profile.githubUrl}
-                    className="flex min-h-14 flex-col justify-center bg-surface p-3 hover:bg-surface-2 [&:hover_span]:decoration-accent"
-                    style={{ ["--focus-bg" as string]: "var(--surface)" }}
-                  >
-                    <span className="t-label flex items-center gap-1.5">
-                      <GithubIcon size={14} /> GitHub
-                    </span>
-                    <span className="t-mono mt-1 text-fg underline decoration-border underline-offset-[3px]">
-                      {profile.github}
-                    </span>
-                  </a>
-                  <a
-                    href={profile.linkedinUrl}
-                    className="flex min-h-14 flex-col justify-center bg-surface p-3 hover:bg-surface-2 [&:hover_span]:decoration-accent"
-                    style={{ ["--focus-bg" as string]: "var(--surface)" }}
-                  >
-                    <span className="t-label flex items-center gap-1.5">
-                      <LinkedinIcon size={14} /> LinkedIn
-                    </span>
-                    <span className="t-mono mt-1 text-fg underline decoration-border underline-offset-[3px]">
-                      Daniel Estrada Olalde
-                    </span>
-                  </a>
-                  <div className="flex min-h-14 flex-col justify-center bg-surface p-3">
-                    <span className="t-label flex items-center gap-1.5">
-                      <MapPin size={14} aria-hidden="true" /> Ubicación
-                    </span>
-                    <span className="t-mono mt-1 text-fg">
-                      {profile.location}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* El índice completo vive aquí donde el raíl lateral no existe. */}
-              <nav aria-label="Índice" className="mt-8 lg:hidden">
-                <ul className="t-mono flex flex-wrap gap-x-5 gap-y-2">
-                  {sections.map((seccion) => (
-                    <li key={seccion.id}>
-                      <a className="enlace" href={`#${seccion.id}`}>
-                        {seccion.label}
-                      </a>
-                    </li>
+          <div className="e-capas">
+            {[...stackLayers].reverse().map((capa) => (
+              <div key={capa.id} className={`e-capa ${capa.viva ? "e-capa--viva" : ""}`}>
+                <p className="e-capa-nombre">{capa.label}</p>
+                <ul>
+                  {capa.items.map((item) => (
+                    <li key={item}>{item}</li>
                   ))}
                 </ul>
-              </nav>
-
-              <div className="mt-10 border-t border-border-soft pt-6">
-                <p className="t-colofon">
-                  © {new Date().getFullYear()} {profile.name}
-                </p>
-                <p className="t-colofon mt-1">
-                  Next.js · Tailwind CSS · Martian Mono e IBM Plex
-                </p>
               </div>
-            </footer>
-          </main>
-        </div>
-      </div>
+            ))}
+          </div>
+
+          <div className="mt-20 grid gap-12 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+            <div>
+              <h3 className="e-subtitulo mb-6">Formación</h3>
+              <div className="e-formacion">
+                {education.map((e) => (
+                  <div key={e.title}>
+                    <span className="e-periodo">{e.period}</span>
+                    <span>
+                      <strong className="font-semibold">{e.title}</strong>
+                      <span className="block text-[0.9375rem]" style={{ color: "var(--e-muted)" }}>
+                        {e.school}
+                      </span>
+                    </span>
+                    <span className="text-[0.875rem]" style={{ color: "var(--e-muted)" }}>
+                      {e.detail ?? ""}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="e-subtitulo mb-6">Idiomas</h3>
+              <div className="e-formacion">
+                {languages.map((l) => (
+                  <div key={l.name} style={{ gridTemplateColumns: "minmax(0,1fr)" }}>
+                    <span>
+                      <strong className="font-semibold">{l.name}</strong> · {l.level}
+                      <span className="block text-[0.9375rem]" style={{ color: "var(--e-muted)" }}>
+                        {l.detail}
+                      </span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------- CONTACTO */}
+        <section id="contacto" aria-labelledby="titulo-contacto" className="e-marco e-cierre">
+          <h2 id="titulo-contacto" className="e-subtitulo max-w-[28ch]">
+            {portada.cierre}
+          </h2>
+          <a href={`mailto:${profile.email}`} className="e-correo">
+            {profile.email}
+          </a>
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <a href={profile.githubUrl} className="e-boton e-boton--hueco e-boton--chico">
+              <GithubIcon className="h-4 w-4" /> github.com/{profile.github}
+            </a>
+            <a href={profile.linkedinUrl} className="e-boton e-boton--hueco e-boton--chico">
+              <LinkedinIcon className="h-4 w-4" /> LinkedIn
+            </a>
+            <span className="inline-flex items-center gap-2 px-2 text-[0.9375rem]" style={{ color: "var(--e-muted)" }}>
+              <MapPin size={16} aria-hidden="true" /> {profile.location}
+            </span>
+          </div>
+
+          <div className="e-formatos">
+            <Link href="/cv" className="e-formato">
+              <strong>Clásico <ArrowUpRight size={18} aria-hidden="true" /></strong>
+              <span>Formato Harvard, blanco y negro, para convocatorias formales.</span>
+            </Link>
+            <Link href="/cv?formato=destacado" className="e-formato">
+              <strong>Destacado <ArrowUpRight size={18} aria-hidden="true" /></strong>
+              <span>Para empresa: jerarquía visual y color contenido.</span>
+            </Link>
+            <Link href="/cv?formato=operaciones" className="e-formato">
+              <strong>Soporte TI <ArrowUpRight size={18} aria-hidden="true" /></strong>
+              <span>El mismo expediente, ordenado para operaciones.</span>
+            </Link>
+          </div>
+
+          <footer className="e-pie">
+            <span>© 2026 {profile.name}</span>
+            <a href="#inicio" className="e-enlace inline-flex items-center gap-1">
+              Volver arriba <ArrowDown size={14} className="rotate-180" aria-hidden="true" />
+            </a>
+          </footer>
+        </section>
+      </main>
     </div>
   );
 }
