@@ -1,0 +1,476 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-27T16:41:57+00:00",
+  "title": "Design System: Escenario de lanzamiento",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Tinta de escenario",
+        "canonical": "oklch(15.9% 0.011 268)",
+        "tonalRamp": [
+          "oklch(15% 0.011 268)",
+          "oklch(25% 0.011 268)",
+          "oklch(36% 0.011 268)",
+          "oklch(47% 0.011 268)",
+          "oklch(58% 0.011 268)",
+          "oklch(70% 0.011 268)",
+          "oklch(82% 0.011 268)",
+          "oklch(95% 0.011 268)"
+        ]
+      },
+      "bg": {
+        "role": "neutral",
+        "displayName": "Blanco frío",
+        "canonical": "oklch(97.3% 0.003 265)",
+        "tonalRamp": [
+          "oklch(15% 0.003 265)",
+          "oklch(25% 0.003 265)",
+          "oklch(36% 0.003 265)",
+          "oklch(47% 0.003 265)",
+          "oklch(58% 0.003 265)",
+          "oklch(70% 0.003 265)",
+          "oklch(82% 0.003 265)",
+          "oklch(95% 0.003 265)"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(25% 0 0)",
+          "oklch(36% 0 0)",
+          "oklch(47% 0 0)",
+          "oklch(58% 0 0)",
+          "oklch(70% 0 0)",
+          "oklch(82% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Gris de lectura",
+        "canonical": "oklch(41.9% 0.021 264)",
+        "tonalRamp": [
+          "oklch(15% 0.015 264)",
+          "oklch(25% 0.017 264)",
+          "oklch(36% 0.020 264)",
+          "oklch(47% 0.021 264)",
+          "oklch(58% 0.017 264)",
+          "oklch(70% 0.014 264)",
+          "oklch(82% 0.011 264)",
+          "oklch(95% 0.006 264)"
+        ]
+      },
+      "faint": {
+        "role": "neutral",
+        "displayName": "Gris de rótulo",
+        "tonalRamp": [
+          "oklch(15% 0.013 264)",
+          "oklch(25% 0.015 264)",
+          "oklch(36% 0.018 264)",
+          "oklch(47% 0.019 264)",
+          "oklch(58% 0.016 264)",
+          "oklch(70% 0.013 264)",
+          "oklch(82% 0.010 264)",
+          "oklch(95% 0.005 264)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Filete",
+        "canonical": "oklch(89.1% 0.009 265)",
+        "tonalRamp": [
+          "oklch(15% 0.009 265)",
+          "oklch(25% 0.009 265)",
+          "oklch(36% 0.009 265)",
+          "oklch(47% 0.009 265)",
+          "oklch(58% 0.009 265)",
+          "oklch(70% 0.009 265)",
+          "oklch(82% 0.009 265)",
+          "oklch(95% 0.009 265)"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Filete fuerte",
+        "tonalRamp": [
+          "oklch(15% 0.012 265)",
+          "oklch(25% 0.012 265)",
+          "oklch(36% 0.012 265)",
+          "oklch(47% 0.012 265)",
+          "oklch(58% 0.012 265)",
+          "oklch(70% 0.012 265)",
+          "oklch(82% 0.012 265)",
+          "oklch(95% 0.012 265)"
+        ]
+      },
+      "live": {
+        "role": "tertiary",
+        "displayName": "Verde en vivo",
+        "canonical": "oklch(56.1% 0.119 162)",
+        "tonalRamp": [
+          "oklch(15% 0.040 162)",
+          "oklch(25% 0.065 162)",
+          "oklch(36% 0.090 162)",
+          "oklch(47% 0.110 162)",
+          "oklch(58% 0.119 162)",
+          "oklch(70% 0.110 162)",
+          "oklch(82% 0.080 162)",
+          "oklch(95% 0.030 162)"
+        ]
+      },
+      "classly": {
+        "role": "secondary",
+        "displayName": "Azul Classly",
+        "canonical": "oklch(52.2% 0.194 258)",
+        "tonalRamp": [
+          "oklch(15% 0.070 258)",
+          "oklch(25% 0.120 258)",
+          "oklch(36% 0.160 258)",
+          "oklch(47% 0.190 258)",
+          "oklch(58% 0.180 258)",
+          "oklch(70% 0.130 258)",
+          "oklch(82% 0.075 258)",
+          "oklch(95% 0.025 258)"
+        ]
+      },
+      "prompt": {
+        "role": "secondary",
+        "displayName": "Violeta PromptEngine",
+        "canonical": "oklch(49.2% 0.240 284)",
+        "tonalRamp": [
+          "oklch(15% 0.080 284)",
+          "oklch(25% 0.140 284)",
+          "oklch(36% 0.200 284)",
+          "oklch(47% 0.235 284)",
+          "oklch(58% 0.210 284)",
+          "oklch(70% 0.150 284)",
+          "oklch(82% 0.085 284)",
+          "oklch(95% 0.028 284)"
+        ]
+      },
+      "switch": {
+        "role": "secondary",
+        "displayName": "Verde azulado SwitchIot",
+        "canonical": "oklch(48.9% 0.080 195)",
+        "tonalRamp": [
+          "oklch(15% 0.035 195)",
+          "oklch(25% 0.055 195)",
+          "oklch(36% 0.070 195)",
+          "oklch(47% 0.080 195)",
+          "oklch(58% 0.075 195)",
+          "oklch(70% 0.060 195)",
+          "oklch(82% 0.040 195)",
+          "oklch(95% 0.018 195)"
+        ]
+      },
+      "chapter-ink": {
+        "role": "secondary",
+        "displayName": "Blanco de capítulo"
+      },
+      "ink-dark": {
+        "role": "primary",
+        "displayName": "Tinta de escenario (oscuro)"
+      },
+      "bg-dark": {
+        "role": "neutral",
+        "displayName": "Blanco frío (oscuro)"
+      },
+      "panel-dark": {
+        "role": "neutral",
+        "displayName": "Panel (oscuro)"
+      },
+      "muted-dark": {
+        "role": "neutral",
+        "displayName": "Gris de lectura (oscuro)"
+      },
+      "faint-dark": {
+        "role": "neutral",
+        "displayName": "Gris de rótulo (oscuro)"
+      },
+      "line-dark": {
+        "role": "neutral",
+        "displayName": "Filete (oscuro)"
+      },
+      "line-strong-dark": {
+        "role": "neutral",
+        "displayName": "Filete fuerte (oscuro)"
+      },
+      "live-dark": {
+        "role": "tertiary",
+        "displayName": "Verde en vivo (oscuro)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Nombre",
+        "purpose": "El nombre en el héroe."
+      },
+      "headline": {
+        "displayName": "Titular",
+        "purpose": "Título de cada sección y de cada capítulo de producto."
+      },
+      "title": {
+        "displayName": "Subtítulo",
+        "purpose": "Posicionamiento, puesto actual, Formación, Idiomas y frase de cierre."
+      },
+      "lead": {
+        "displayName": "Entradilla",
+        "purpose": "Entradilla del héroe y de cada capítulo; máximo 40ch."
+      },
+      "body": {
+        "displayName": "Texto",
+        "purpose": "Texto corrido de sección; máximo 62ch."
+      },
+      "label": {
+        "displayName": "Rótulo",
+        "purpose": "Versales semiexpandidas debajo del dato o junto a lo que rotula."
+      },
+      "numeral-stage": {
+        "displayName": "Cifra de escenario",
+        "purpose": "El 808 del héroe, con rodillo de dígitos."
+      },
+      "numeral-chapter": {
+        "displayName": "Cifra de capítulo",
+        "purpose": "Pruebas de cada app en su tablero."
+      },
+      "numeral-cell": {
+        "displayName": "Cifra de celda",
+        "purpose": "Ficheros, plataformas y versión en el tablero."
+      },
+      "numeral-year": {
+        "displayName": "Año de estación",
+        "purpose": "Años del hilo de trayectoria."
+      },
+      "contact": {
+        "displayName": "Correo",
+        "purpose": "El correo del cierre a escala de titular."
+      }
+    },
+    "shadows": [
+      {
+        "name": "halo-vivo",
+        "value": "0 0 0 5px color-mix(in oklab, var(--e-live) 22%, transparent)",
+        "purpose": "Solo el nodo de la estación actual de la trayectoria."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-escenario",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Curva de todo movimiento con dirección (--e-ease); color y opacidad van lineales."
+      },
+      {
+        "name": "entrada",
+        "value": "600ms, escalón 70ms; desde opacity 0, translateY(18px), blur(6px)",
+        "purpose": "Única entrada, en la primera pantalla (.e-entra), con animation-fill backwards."
+      },
+      {
+        "name": "tramo",
+        "value": "600ms, retardo 150ms + i × 70ms; scaleX desde 0",
+        "purpose": "Crecimiento de los tramos de la barra de alineación."
+      },
+      {
+        "name": "rodillo",
+        "value": "760ms, escalón 60ms por dígito",
+        "purpose": "Rodillo de dígitos; una sola vez por cifra (≤900 ms con tres dígitos)."
+      },
+      {
+        "name": "pulso",
+        "value": "2.4s infinito",
+        "purpose": "Anillo del punto vivo «En producción»."
+      },
+      {
+        "name": "flujo",
+        "value": "1.2s lineal infinito",
+        "purpose": "Enlaces discontinuos de la figura de red de SwitchIot."
+      },
+      {
+        "name": "control",
+        "value": "160–180ms",
+        "purpose": "Botones y bordes de controles; subrayado de nav 260ms; correo 500ms."
+      },
+      {
+        "name": "movimiento-reducido",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Apaga animaciones y transiciones de entrada, tramos, rodillo, pulso, flujo, piezas, correo, formatos y botones; el reposo ya es el estado final."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "estrecho",
+        "value": "560px"
+      },
+      {
+        "name": "compositor",
+        "value": "640px"
+      },
+      {
+        "name": "formatos",
+        "value": "760px"
+      },
+      {
+        "name": "nav",
+        "value": "900px"
+      },
+      {
+        "name": "dos-columnas",
+        "value": "1080px"
+      }
+    ],
+    "themes": {
+      "light": ":root",
+      "dark": ".dark (next-themes, attribute=class)",
+      "scope": ".escena; tokens --e-* en app/home.css"
+    },
+    "outOfScope": "La ruta /cv (app/cv/*, app/globals.css, components/cv/*) es una superficie imprimible con sus propios tokens de «ficha técnica»; quedó fuera de este mundo y se dejó intacta a propósito."
+  },
+  "components": [
+    {
+      "name": "Botón primario",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción principal (Ver currículum): píldora en tinta con flecha que avanza al pasar.",
+      "html": "<a href=\"#\" class=\"ds-boton\">Ver currículum <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a>",
+      "css": ".ds-boton{display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;min-height:3rem;padding:0 1.375rem;border-radius:999px;border:1.5px solid var(--e-ink, #0b0d12);font-family:var(--e-display, Archivo, 'Helvetica Neue', Arial, sans-serif);font-weight:600;font-size:1rem;text-decoration:none;white-space:nowrap;cursor:pointer;transition:transform 180ms var(--e-ease, cubic-bezier(0.16, 1, 0.3, 1)),background-color 180ms linear,color 180ms linear;background:var(--e-ink, #0b0d12);color:var(--e-bg, #f5f6f8);} .ds-boton svg{transition:transform 260ms var(--e-ease, cubic-bezier(0.16, 1, 0.3, 1));} .ds-boton:hover svg{transform:translateX(3px);} .ds-boton:active{transform:translateY(1px);} .ds-boton:focus-visible{outline:2px solid var(--e-ink, #0b0d12);outline-offset:3px;}"
+    },
+    {
+      "name": "Botón hueco",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Acción secundaria (Escríbeme, enlaces de proyecto): borde en tinta que se rellena al 8 % al pasar.",
+      "html": "<a href=\"#\" class=\"ds-boton-hueco\">Escríbeme</a>",
+      "css": ".ds-boton-hueco{display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;min-height:3rem;padding:0 1.375rem;border-radius:999px;border:1.5px solid var(--e-ink, #0b0d12);font-family:var(--e-display, Archivo, 'Helvetica Neue', Arial, sans-serif);font-weight:600;font-size:1rem;text-decoration:none;white-space:nowrap;cursor:pointer;transition:transform 180ms var(--e-ease, cubic-bezier(0.16, 1, 0.3, 1)),background-color 180ms linear,color 180ms linear;background:transparent;color:var(--e-ink, #0b0d12);} .ds-boton-hueco:hover{background:color-mix(in oklab, var(--e-ink, #0b0d12) 8%, transparent);} .ds-boton-hueco:active{transform:translateY(1px);} .ds-boton-hueco:focus-visible{outline:2px solid var(--e-ink, #0b0d12);outline-offset:3px;}"
+    },
+    {
+      "name": "Botón de icono",
+      "kind": "button",
+      "refersTo": "button-icon",
+      "description": "Círculo de 2.75rem para tema y redes; el borde pasa a tinta al pasar.",
+      "html": "<button type=\"button\" class=\"ds-icono-boton\" aria-label=\"Cambiar a tema oscuro\"><svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></svg></button>",
+      "css": ".ds-icono-boton{display:inline-grid;place-items:center;width:2.75rem;height:2.75rem;border-radius:999px;color:var(--e-ink, #0b0d12);background:transparent;border:1.5px solid var(--e-line-strong, #b9bec8);cursor:pointer;transition:border-color 160ms linear,background-color 160ms linear;} .ds-icono-boton:hover{border-color:var(--e-ink, #0b0d12);} .ds-icono-boton:focus-visible{outline:2px solid var(--e-ink, #0b0d12);outline-offset:3px;}"
+    },
+    {
+      "name": "Barra superior",
+      "kind": "nav",
+      "refersTo": "top-bar",
+      "description": "Barra fija de 4rem: alias, enlaces con raya que crece desde la izquierda y «Currículum».",
+      "html": "<header class=\"ds-barra\"><a href=\"#\" class=\"ds-firma\">alnuxE</a><nav class=\"ds-nav\"><a href=\"#\" aria-current=\"true\">Proyectos</a><a href=\"#\">Trayectoria</a><a href=\"#\">Stack</a><a href=\"#\">Contacto</a></nav><a href=\"#\" class=\"ds-barra-cv\">Currículum <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></a></header>",
+      "css": ".ds-barra{display:flex;align-items:center;gap:1.5rem;height:4rem;padding:0 1.5rem;background:var(--e-bg, #f5f6f8);border-bottom:1px solid var(--e-line, #d8dbe1);font-family:var(--e-display, Archivo, 'Helvetica Neue', Arial, sans-serif);} .ds-firma{color:var(--e-ink, #0b0d12);text-decoration:none;font-weight:700;letter-spacing:-0.01em;} .ds-nav{display:flex;gap:0.25rem;margin-left:auto;} .ds-nav a{position:relative;padding:0.5rem 0.75rem;color:var(--e-muted, #474d59);text-decoration:none;font-size:0.9375rem;font-weight:500;} .ds-nav a::after{content:'';position:absolute;left:0.75rem;right:0.75rem;bottom:0.3rem;height:2px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform 260ms var(--e-ease, cubic-bezier(0.16, 1, 0.3, 1));} .ds-nav a:hover,.ds-nav a[aria-current='true']{color:var(--e-ink, #0b0d12);} .ds-nav a:hover::after,.ds-nav a[aria-current='true']::after{transform:scaleX(1);} .ds-nav a:focus-visible,.ds-firma:focus-visible,.ds-barra-cv:focus-visible{outline:2px solid var(--e-ink, #0b0d12);outline-offset:3px;} .ds-barra-cv{display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;min-height:3rem;padding:0 1.375rem;border-radius:999px;border:1.5px solid var(--e-ink, #0b0d12);font-family:var(--e-display, Archivo, 'Helvetica Neue', Arial, sans-serif);font-weight:600;font-size:1rem;text-decoration:none;white-space:nowrap;cursor:pointer;transition:transform 180ms var(--e-ease, cubic-bezier(0.16, 1, 0.3, 1)),background-color 180ms linear,color 180ms linear;min-height:2.5rem;padding:0 1rem;font-size:0.9375rem;background:var(--e-ink, #0b0d12);color:var(--e-bg, #f5f6f8);}"
+    },
+    {
+      "name": "Chip de tecnología",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Tecnologías del puesto: píldora con borde de filete fuerte.",
+      "html": "<ul class=\"ds-chips\"><li>Laravel</li><li>PHP</li><li>MongoDB</li></ul>",
+      "css": ".ds-chips{display:flex;flex-wrap:wrap;gap:0.4rem;list-style:none;padding:0;margin:0;font-family:var(--e-display, Archivo, 'Helvetica Neue', Arial, sans-serif);} .ds-chips li{padding:0.3rem 0.75rem;border-radius:999px;border:1px solid var(--e-line-strong, #b9bec8);font-size:0.8125rem;font-weight:500;color:var(--e-ink, #0b0d12);}"
+    },
+    {
+      "name": "Capa del stack",
+      "kind": "card",
+      "refersTo": "layer",
+      "description": "Capas apiladas con costura de 4px; la capa viva invierte a tinta.",
+      "html": "<div class=\"ds-capas\"><div class=\"ds-capa ds-capa--viva\"><p>Práctica</p><ul><li>Arquitectura limpia</li><li>Pruebas automatizadas</li></ul></div><div class=\"ds-capa\"><p>Backend y datos</p><ul><li>Laravel</li><li>Node.js</li></ul></div></div>",
+      "css": ".ds-capas{display:grid;gap:4px;font-family:var(--e-display, Archivo, 'Helvetica Neue', Arial, sans-serif);} .ds-capa{display:grid;grid-template-columns:10rem minmax(0,1fr);gap:0.5rem 2rem;align-items:baseline;padding:1.25rem 1.5rem;border-radius:10px;background:var(--e-panel, #ffffff);border:1px solid var(--e-line, #d8dbe1);color:var(--e-ink, #0b0d12);} .ds-capa p{margin:0;font-weight:700;font-variation-settings:'wdth' 90;font-size:1.125rem;} .ds-capa ul{display:flex;flex-wrap:wrap;gap:0.4rem 1.75rem;list-style:none;margin:0;padding:0;color:var(--e-muted, #474d59);} .ds-capa--viva{background:var(--e-ink, #0b0d12);border-color:var(--e-ink, #0b0d12);color:var(--e-bg, #f5f6f8);} .ds-capa--viva ul{color:color-mix(in oklab, var(--e-bg, #f5f6f8) 82%, var(--e-ink, #0b0d12));}"
+    },
+    {
+      "name": "Barra de alineación",
+      "kind": "custom",
+      "refersTo": "alignment-segment",
+      "description": "Firma del héroe: tramos proporcionales a las pruebas de cada app, en su tinta, que enlazan a su capítulo.",
+      "html": "<nav class=\"ds-alineacion\" aria-label=\"Pruebas por aplicación\"><a href=\"#\" class=\"ds-tramo\" style=\"--peso:338;--ink:var(--e-switch,#0d6e6e)\"><span class=\"ds-tramo-barra\"></span><span class=\"ds-tramo-dato\"><strong>338</strong><span>SwitchIot</span></span></a><a href=\"#\" class=\"ds-tramo\" style=\"--peso:320;--ink:var(--e-prompt,#5b34e0)\"><span class=\"ds-tramo-barra\"></span><span class=\"ds-tramo-dato\"><strong>320</strong><span>PromptEngine</span></span></a><a href=\"#\" class=\"ds-tramo\" style=\"--peso:150;--ink:var(--e-classly,#0362d6)\"><span class=\"ds-tramo-barra\"></span><span class=\"ds-tramo-dato\"><strong>150</strong><span>Classly</span></span></a></nav>",
+      "css": ".ds-alineacion{display:flex;gap:4px;font-family:var(--e-display, Archivo, 'Helvetica Neue', Arial, sans-serif);} .ds-tramo{flex-grow:var(--peso);flex-basis:0;min-width:0;display:flex;flex-direction:column;gap:0.6rem;color:var(--e-ink, #0b0d12);text-decoration:none;transition:opacity 200ms linear;} .ds-tramo-barra{height:1.25rem;background:var(--ink);transition:height 260ms var(--e-ease, cubic-bezier(0.16, 1, 0.3, 1));} .ds-tramo:hover .ds-tramo-barra,.ds-tramo:focus-visible .ds-tramo-barra{height:2.25rem;} .ds-alineacion:has(.ds-tramo:hover) .ds-tramo:not(:hover){opacity:0.55;} .ds-tramo:focus-visible{outline:2px solid var(--e-ink, #0b0d12);outline-offset:3px;} .ds-tramo-dato{display:flex;flex-direction:column;gap:0.1rem;font-size:0.875rem;line-height:1.25;} .ds-tramo-dato strong{font-weight:700;font-variant-numeric:tabular-nums;} .ds-tramo-dato span{color:var(--e-muted, #474d59);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}"
+    },
+    {
+      "name": "Tablero de capítulo",
+      "kind": "custom",
+      "refersTo": "chapter-prompt",
+      "description": "Capítulo a sangre en su tinta: la cifra de pruebas manda y tres celdas la acompañan, todo en blanco y sus mezclas.",
+      "html": "<section class=\"ds-capitulo\" style=\"--tono:var(--e-prompt,#5b34e0)\"><div class=\"ds-tablero\"><div class=\"ds-tablero-principal\"><span class=\"ds-cifra ds-cifra--grande\">320</span><p class=\"ds-rotulo\">pruebas automatizadas</p></div><div class=\"ds-celda\"><span class=\"ds-cifra\">54</span><p class=\"ds-rotulo\">ficheros Dart</p></div><div class=\"ds-celda\"><span class=\"ds-cifra\">3</span><p class=\"ds-rotulo\">plataformas</p></div><div class=\"ds-celda\"><span class=\"ds-cifra\">1.4</span><p class=\"ds-rotulo\">versión</p></div></div></section>",
+      "css": ".ds-capitulo{--tinta:#ffffff;--tinta-3:color-mix(in oklab, #ffffff 88%, var(--tono));--filete:color-mix(in oklab, #ffffff 26%, var(--tono));background:var(--tono);color:var(--tinta);padding:2.5rem 1.5rem;font-family:var(--e-display, Archivo, 'Helvetica Neue', Arial, sans-serif);} .ds-tablero{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--tinta);} .ds-tablero-principal{grid-column:1/-1;padding:1.25rem 0 1.5rem;border-bottom:1px solid var(--filete);} .ds-celda{padding:1.1rem 1rem 0 0;} .ds-celda + .ds-celda{padding-left:1rem;border-left:1px solid var(--filete);} .ds-cifra{display:block;font-weight:800;font-variation-settings:'wdth' 62;font-variant-numeric:tabular-nums lining-nums;line-height:0.82;letter-spacing:-0.02em;font-size:clamp(2.5rem, 1.8rem + 2.4vw, 3.75rem);} .ds-cifra--grande{font-size:clamp(6rem, 3rem + 9vw, 10.5rem);} .ds-rotulo{margin:0.55rem 0 0;font-weight:600;font-variation-settings:'wdth' 115;font-size:0.75rem;letter-spacing:0.07em;line-height:1.3;text-transform:uppercase;color:var(--tinta-3);}"
+    },
+    {
+      "name": "Estación del hilo",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Trayectoria: año condensado, nodo sobre un hilo continuo de 2px y cuerpo; el nodo vivo es verde con halo.",
+      "html": "<ol class=\"ds-hilo\"><li class=\"ds-estacion\"><span class=\"ds-anio\">2022</span><span class=\"ds-nodo\"></span><div><strong>Ingeniería en Informática</strong><span>IPN · 9.º semestre</span></div></li><li class=\"ds-estacion ds-estacion--vivo\"><span class=\"ds-anio\">2024</span><span class=\"ds-nodo\"></span><div><strong>Desarrollador Backend</strong><span>Fay Publicidad · Metrix</span></div></li></ol>",
+      "css": ".ds-hilo{list-style:none;margin:0;padding:0;font-family:var(--e-display, Archivo, 'Helvetica Neue', Arial, sans-serif);color:var(--e-ink, #0b0d12);} .ds-estacion{position:relative;display:grid;grid-template-columns:5.5rem 1.375rem minmax(0,1fr);column-gap:1.25rem;padding-bottom:2rem;} .ds-estacion::before{content:'';position:absolute;left:calc(5.5rem + 1.25rem + 0.6875rem - 1px);top:0.9rem;bottom:0;width:2px;background:var(--e-ink, #0b0d12);} .ds-estacion:last-child::before{bottom:auto;height:0.9rem;top:0;} .ds-anio{font-weight:800;font-variation-settings:'wdth' 62;font-variant-numeric:tabular-nums lining-nums;font-size:clamp(2rem, 1.4rem + 2.2vw, 3.25rem);line-height:0.85;letter-spacing:-0.02em;text-align:right;} .ds-nodo{position:relative;z-index:1;justify-self:center;width:1.375rem;height:1.375rem;margin-top:0.2rem;border-radius:50%;border:2px solid var(--e-ink, #0b0d12);background:var(--e-bg, #f5f6f8);} .ds-estacion--vivo .ds-nodo{background:var(--e-live, #0f8a5f);border-color:var(--e-live, #0f8a5f);box-shadow:0 0 0 5px color-mix(in oklab, var(--e-live, #0f8a5f) 22%, transparent);} .ds-estacion strong{display:block;font-weight:700;font-size:1.25rem;line-height:1.2;} .ds-estacion div span{display:block;margin-top:0.2rem;color:var(--e-muted, #474d59);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "El escenario de lanzamiento",
+    "overview": "La portada (`app/page.tsx`) se presenta como un keynote de lanzamientos de producto: un escenario neutro, grafito en oscuro y blanco frío en claro, sobre el que cada aplicación propia sube con su capítulo entero bañado en su color de marca. El color no se reparte en acentos: cada capítulo es una sola tinta a sangre y el escenario no lleva ninguna. La prueba la dan las cifras —808 pruebas automatizadas, 338/320/150 por app— compuestas a escala de escenario con dígitos tabulares que ruedan una sola vez al aparecer.\n\nLa jerarquía no sale de mezclar familias, sino de mover los ejes de una sola: Archivo variable, de condensada negra para cifras y titulares a semiexpandida en versales para rótulos. La densidad es de cartel en la primera pantalla (nombre, cifra, alineación proporcional y dos acciones) y de documento sobrio en las secciones de escenario (trayectoria como un hilo continuo, stack como capas apiladas, cierre con el correo a escala de titular). El escenario es plano: la profundidad la dan el cambio de tinta entre capítulos, no las sombras.\n\n**Alcance.** Este sistema cubre solo la portada: todos sus tokens viven en `app/home.css` con prefijo `--e-` y se aplican bajo `.escena`. La ruta `/cv` (`app/cv/*`, `app/globals.css`, `components/cv/*`) es una superficie de documento imprimible con sus propios tokens anteriores de «ficha técnica» (Martian Mono, IBM Plex, acento granate); queda fuera de este mundo y se dejó intacta a propósito. No forma parte de este sistema ni debe tomarse como referencia para él, ni al revés.",
+    "keyCharacteristics": [
+      "Un capítulo por producto, a sangre, en una sola tinta de marca; el escenario es neutro.",
+      "Una sola familia (Archivo) cuya jerarquía la dan los ejes de anchura y peso.",
+      "Cifras tabulares a escala de escenario con rodillo de dígitos que rueda una vez.",
+      "Barra de alineación proporcional (338/320/150) que liga el héroe con cada capítulo.",
+      "Un hilo continuo de trayectoria con estaciones; lo vivo se tiñe de verde.",
+      "Superficies planas; el estado final de toda animación es el estado de reposo."
+    ],
+    "rules": [
+      {
+        "name": "La Regla de Una Tinta por Capítulo",
+        "body": "Cada producto es un solo color a sangre; dentro del capítulo todo es blanco y sus mezclas. No hay acentos sueltos de marca en el escenario.",
+        "section": "colors"
+      },
+      {
+        "name": "La Regla del Color que Enlaza",
+        "body": "En el escenario, una tinta de marca solo aparece como referencia a su capítulo: el tramo de la alineación del héroe y la píldora de la app en la estación «Hoy», ambos enlaces a ese capítulo.",
+        "section": "colors"
+      },
+      {
+        "name": "La Regla del Verde Vivo",
+        "body": "El verde solo marca lo que está ocurriendo ahora (el puesto actual y el contador en producción). Nunca decora.",
+        "section": "colors"
+      },
+      {
+        "name": "La Regla de Una Familia",
+        "body": "Archivo es la única voz. La jerarquía la dan el peso y el eje de anchura; no se añade una segunda familia de display.",
+        "section": "typography"
+      },
+      {
+        "name": "La Regla de la Cifra Tabular",
+        "body": "Toda cifra que se compara con otra se compone con `tabular-nums lining-nums` y anchura condensada; las columnas cuadran.",
+        "section": "typography"
+      },
+      {
+        "name": "La Regla del Rótulo Debajo",
+        "body": "El rótulo va debajo del dato o junto a lo que rotula, nunca encima de un título como antetítulo.",
+        "section": "typography"
+      },
+      {
+        "name": "La Regla de la Costura",
+        "body": "Los elementos que forman un solo todo proporcional se separan 4px, no con huecos de rejilla genéricos: se leen como una pieza partida, no como tarjetas sueltas.",
+        "section": "layout"
+      },
+      {
+        "name": "La Regla del Escenario Plano",
+        "body": "Nada flota. Si algo necesita separarse, cambia de tinta o recibe un filete.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do montar cada producto nuevo como capítulo a sangre en una sola tinta, con todo su contenido en blanco y sus mezclas `color-mix` al 92 / 88 / 26 %; comprobar ≥ 4,5:1 del texto terciario sobre la tinta.",
+      "Do declarar todo token nuevo de la portada en `app/home.css`, con prefijo `--e-` y su valor en `.dark`.",
+      "Do componer las cifras comparables con Archivo condensada negra y `tabular-nums lining-nums`.",
+      "Do dejar que el estado de reposo sea el estado final: animaciones con `backwards`, desactivadas en `prefers-reduced-motion: reduce`, y una sola entrada escalonada (600ms, 70ms de escalón) en la primera pantalla.",
+      "Do usar la curva de escenario `cubic-bezier(0.16, 1, 0.3, 1)` para todo movimiento con dirección; lineal solo para color y opacidad.",
+      "Do separar las piezas de un mismo todo proporcional con la costura de 4px."
+    ],
+    "donts": [
+      "Don't usar una tinta de marca en el escenario salvo como enlace a su capítulo (tramo de alineación, píldora de app).",
+      "Don't usar el verde vivo para nada que no esté ocurriendo ahora.",
+      "Don't añadir una segunda familia de display ni sombras de elevación.",
+      "Don't poner un rótulo encima de un título como antetítulo; va debajo o junto al dato.",
+      "Don't reducir los capítulos a una fila de tarjetas iguales ni volver al héroe con botones sobre tarjetas.",
+      "Don't mostrar capturas o pantallas inventadas: las figuras dibujan el mecanismo con hechos de `content/site.ts`.",
+      "Don't añadir nuevas lecturas de tokens de `app/globals.css` desde la portada, ni de tokens `--e-*` desde `/cv`: son mundos separados."
+    ]
+  }
+}
